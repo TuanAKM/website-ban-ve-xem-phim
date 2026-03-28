@@ -89,6 +89,7 @@ namespace MiniCinema.Controllers
                 .Include(v => v.Ghe)
                 .Include(v => v.SuatChieu)
                     .ThenInclude(s => s.Phim)
+                .Include(v => v.SuatChieu.PhongChieu)
                 .Where(v => v.MaGiaoDich == transactionId)
                 .ToListAsync();
 

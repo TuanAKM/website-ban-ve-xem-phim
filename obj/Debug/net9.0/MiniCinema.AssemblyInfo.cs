@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("MiniCinema")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+90e38229e232e3d3f90104a56cc3dc558bffc936")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+5cc183a20845f0aefe3938e5eea1bac5646d98ed")]
 [assembly: System.Reflection.AssemblyProductAttribute("MiniCinema")]
 [assembly: System.Reflection.AssemblyTitleAttribute("MiniCinema")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
