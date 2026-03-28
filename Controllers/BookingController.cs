@@ -97,6 +97,21 @@ namespace MiniCinema.Controllers
 
             return View(ves);
         }
+
+        [Authorize]
+        public async Task<IActionResult> History()
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var giaoDichs = await _context.GiaoDichs
+                .Include(g => g.Ves!)
+                    .ThenInclude(v => v.SuatChieu!)
+                        .ThenInclude(s => s.Phim)
+                .Where(g => g.UserId == userId)
+                .OrderByDescending(g => g.NgayGiaoDich)
+                .ToListAsync();
+
+            return View(giaoDichs);
+        }
     }
 
     public class SeatActionRequest 

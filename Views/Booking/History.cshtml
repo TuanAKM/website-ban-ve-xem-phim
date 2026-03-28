@@ -1,0 +1,67 @@
+@model IEnumerable<MiniCinema.Models.GiaoDich>
+@{ ViewData["Title"] = "Lịch Sử Mua Vé"; }
+
+<div class="container mt-5 mb-5">
+    <div class="text-center mb-5 border-bottom pb-4">
+        <h2 class="text-primary fw-bold"><i class="bi bi-clock-history"></i> LỊCH SỬ GIAO DỊCH CỦA BẠN</h2>
+        <p class="text-muted fs-5">Tra cứu lại các vé xem phim bạn đã đặt thành công</p>
+    </div>
+
+    <div class="row">
+        @if(Model != null && Model.Any())
+        {
+            @foreach(var gd in Model)
+            {
+                <div class="col-md-12 mb-4">
+                    <div class="card shadow-sm border border-primary rounded-4 overflow-hidden">
+                        <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center p-3">
+                            <span class="fs-5 fw-bold"><i class="bi bi-receipt"></i> Giao Dịch: @gd.MaGiaoDich.Substring(0, 8)...</span>
+                            <span>@gd.NgayGiaoDich.ToString("HH:mm - dd/MM/yyyy")</span>
+                        </div>
+                        <div class="card-body bg-light">
+                            <div class="row">
+                                <div class="col-md-8">
+                                    <h5 class="fw-bold mb-3 text-dark">Danh sách vé (Tổng @gd.Ves?.Count vé)</h5>
+                                    @if(gd.Ves != null) {
+                                        <div class="row">
+                                        @foreach(var ve in gd.Ves)
+                                        {
+                                            <div class="col-sm-6 mb-2">
+                                                <div class="p-2 border rounded bg-white border-warning shadow-sm">
+                                                    <span class="badge bg-warning text-dark me-2">Ghế @ve.GheId</span>
+                                                    <strong class="text-dark">@ve.SuatChieu?.Phim?.TenPhim</strong> 
+                                                    <div class="small text-muted mt-1"><i class="bi bi-clock"></i> Suất: @ve.SuatChieu?.GioBatDau.ToString("HH:mm dd/MM/yyyy")</div>
+                                                    <div class="small text-muted">Trạng thái: 
+                                                        @if(ve.TrangThaiVe == MiniCinema.Models.TrangThaiVe.DaBan) { <span class="text-success fw-bold">Thành Công</span> }
+                                                        else if(ve.TrangThaiVe == MiniCinema.Models.TrangThaiVe.DaCheckIn) { <span class="text-primary fw-bold">Đã Vào Rạp</span> }
+                                                        else { <span class="text-danger fw-bold">Đã Hủy</span> }
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        }
+                                        </div>
+                                    }
+                                </div>
+                                <div class="col-md-4 border-start d-flex flex-column justify-content-center align-items-center mt-3 mt-md-0">
+                                    <span class="text-muted d-block mb-1">Tổng thanh toán:</span>
+                                    <h3 class="text-danger fw-bold mb-3">@gd.TongTien.ToString("#,##0") đ</h3>
+                                    
+                                    <a asp-controller="Booking" asp-action="Ticket" asp-route-transactionId="@gd.MaGiaoDich" class="btn btn-outline-primary rounded-pill w-100 fw-bold"><i class="bi bi-eye"></i> Xem lại Hóa Đơn</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        }
+        else
+        {
+            <div class="col-12 text-center py-5">
+                <i class="bi bi-ticket-detailed text-muted" style="font-size: 5rem;"></i>
+                <h3 class="text-muted mt-3">Chưa có giao dịch nào</h3>
+                <p>Bạn chưa mua vé xem phim nào trên hệ thống.</p>
+                <a asp-action="Index" class="btn btn-primary rounded-pill px-5 mt-2">Đặt Vé Ngay</a>
+            </div>
+        }
+    </div>
+</div>

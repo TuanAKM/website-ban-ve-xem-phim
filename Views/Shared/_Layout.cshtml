@@ -71,13 +71,22 @@
                     <ul class="navbar-nav">
                         @if (User.Identity != null && User.Identity.IsAuthenticated)
                         {
-                            <li class="nav-item">
-                                <span class="nav-link text-success fw-bold">Xin chào, @User.Identity.Name!</span>
-                            </li>
-                            <li class="nav-item">
-                                <form class="form-inline" asp-area="" asp-controller="Account" asp-action="Logout" method="post">
-                                    <button type="submit" class="nav-link btn btn-link text-danger border-0">Đăng xuất</button>
-                                </form>
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle text-success fw-bold" href="#" role="button" data-bs-toggle="dropdown">
+                                    <i class="bi bi-person-circle"></i> Xin chào, @User.Identity.Name!
+                                </a>
+                                <ul class="dropdown-menu dropdown-menu-end shadow-sm">
+                                    @if(!User.IsInRole("Admin"))
+                                    {
+                                        <li><a class="dropdown-item" asp-area="" asp-controller="Booking" asp-action="History"><i class="bi bi-ticket-perforated"></i> Lịch sử Mua Vé</a></li>
+                                        <li><hr class="dropdown-divider"></li>
+                                    }
+                                    <li>
+                                        <form class="form-inline w-100" asp-area="" asp-controller="Account" asp-action="Logout" method="post">
+                                            <button type="submit" class="dropdown-item text-danger w-100 text-start"><i class="bi bi-box-arrow-right"></i> Đăng xuất</button>
+                                        </form>
+                                    </li>
+                                </ul>
                             </li>
                         }
                         else
