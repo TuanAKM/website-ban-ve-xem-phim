@@ -26,15 +26,46 @@
                         <li class="nav-item">
                             <a class="nav-link fw-bold text-primary" asp-area="" asp-controller="Booking" asp-action="Index">ĐẶT VÉ</a>
                         </li>
+                        @if (User.IsInRole("Admin") || User.IsInRole("Staff"))
+                        {
                         <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle text-dark" href="#" role="button" data-bs-toggle="dropdown">Admin</a>
+                            <a class="nav-link dropdown-toggle text-dark" href="#" role="button" data-bs-toggle="dropdown">Quản Trị</a>
                             <ul class="dropdown-menu">
-                                <li><a class="dropdown-item" asp-controller="Movie" asp-action="Index">Quản Lý Phim</a></li>
-                                <li><a class="dropdown-item" asp-controller="Showtime" asp-action="Index">Quản Lý Lịch Chiếu</a></li>
-                                <li><hr class="dropdown-divider"></li>
-                                <li><a class="dropdown-item" asp-controller="Report" asp-action="Index">Doanh Thu</a></li>
+                                @if(User.IsInRole("Admin"))
+                                {
+                                    <li><a class="dropdown-item" asp-area="Admin" asp-controller="Movie" asp-action="Index">Quản Lý Phim</a></li>
+                                }
+                                <li><a class="dropdown-item" asp-area="Admin" asp-controller="Showtime" asp-action="Index">Quản Lý Lịch Chiếu</a></li>
+                                @if(User.IsInRole("Admin"))
+                                {
+                                    <li><hr class="dropdown-divider"></li>
+                                    <li><a class="dropdown-item" asp-area="Admin" asp-controller="Report" asp-action="Index">Doanh Thu</a></li>
+                                }
                             </ul>
                         </li>
+                        }
+                    </ul>
+                    <ul class="navbar-nav">
+                        @if (User.Identity != null && User.Identity.IsAuthenticated)
+                        {
+                            <li class="nav-item">
+                                <span class="nav-link text-success fw-bold">Xin chào, @User.Identity.Name!</span>
+                            </li>
+                            <li class="nav-item">
+                                <form class="form-inline" asp-area="" asp-controller="Account" asp-action="Logout" method="post">
+                                    <button type="submit" class="nav-link btn btn-link text-danger border-0">Đăng xuất</button>
+                                </form>
+                            </li>
+                        }
+                        else
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Account" asp-action="Register">Đăng Ký</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-primary fw-bold" asp-area="" asp-controller="Account" asp-action="Login">Đăng Nhập</a>
+                            </li>
+                        }
                     </ul>
                 </div>
             </div>

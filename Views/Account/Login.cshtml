@@ -1,0 +1,38 @@
+@model MiniCinema.DTOs.LoginDto
+@{ ViewData["Title"] = "Đăng Nhập"; }
+
+<div class="row justify-content-center mt-5">
+    <div class="col-md-5">
+        <div class="card shadow-sm border-0 rounded-4">
+            <div class="card-body p-5">
+                <h3 class="text-center text-primary mb-4 fw-bold">ĐĂNG NHẬP</h3>
+                <form asp-action="Login" asp-route-returnurl="@ViewData["ReturnUrl"]">
+                    <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+                    <div class="mb-3">
+                        <label asp-for="Username" class="form-label text-muted">Tên đăng nhập</label>
+                        <input asp-for="Username" class="form-control form-control-lg rounded-pill px-4" />
+                        <span asp-validation-for="Username" class="text-danger small"></span>
+                    </div>
+                    <div class="mb-3">
+                        <label asp-for="Password" class="form-label text-muted">Mật khẩu</label>
+                        <input asp-for="Password" class="form-control form-control-lg rounded-pill px-4" />
+                        <span asp-validation-for="Password" class="text-danger small"></span>
+                    </div>
+                    <div class="mb-4 form-check ms-2">
+                        <input asp-for="RememberMe" class="form-check-input" />
+                        <label asp-for="RememberMe" class="form-check-label text-muted">Nhớ tài khoản</label>
+                    </div>
+                    <button type="submit" class="btn btn-primary w-100 btn-lg rounded-pill fw-bold">Đăng Nhập</button>
+                    <div class="mt-4 text-center">
+                        <span class="text-muted">Chưa có tài khoản?</span> 
+                        <a asp-action="Register" class="text-decoration-none fw-bold text-primary">Đăng ký ngay</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

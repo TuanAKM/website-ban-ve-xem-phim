@@ -5,7 +5,9 @@ using MiniCinema.DTOs;
 using MiniCinema.Services;
 using System;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 
 namespace MiniCinema.Controllers
 {
@@ -34,6 +36,7 @@ namespace MiniCinema.Controllers
             return View(showtimes);
         }
 
+        [Authorize(Roles = "Customer, Admin, Staff")]
         public async Task<IActionResult> SeatMap(string showtimeId)
         {
             var showtime = await _context.SuatChieus
@@ -61,10 +64,14 @@ namespace MiniCinema.Controllers
             return Json(new { success });
         }
 
+        [Authorize(Roles = "Customer, Admin, Staff")]
         [HttpPost]
         public async Task<IActionResult> Payment(BookingRequestDto req)
         {
-            req.UserId = "guest-user"; // Giả định
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (string.IsNullOrEmpty(userId)) return RedirectToAction("Login", "Account");
+            
+            req.UserId = userId;
             var result = await _bookingService.ProcessPaymentAsync(req);
             
             if (result.IsSuccess && result.GiaoDich != null)

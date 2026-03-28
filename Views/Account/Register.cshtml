@@ -1,0 +1,73 @@
+@model MiniCinema.DTOs.RegisterDto
+@{ ViewData["Title"] = "Đăng Ký"; }
+
+<div class="row justify-content-center mt-5 mb-5">
+    <div class="col-md-7">
+        <div class="card shadow border-0 rounded-4">
+            <div class="card-body p-5">
+                <h3 class="text-center text-success mb-4 fw-bold">TẠO TÀI KHOẢN KHÁCH HÀNG</h3>
+                <form asp-action="Register">
+                    <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+                    
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label asp-for="Username" class="form-label text-muted">Tên đăng nhập</label>
+                            <input asp-for="Username" class="form-control rounded-pill px-3" />
+                            <span asp-validation-for="Username" class="text-danger small"></span>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label asp-for="HoTen" class="form-label text-muted">Họ và Tên</label>
+                            <input asp-for="HoTen" class="form-control rounded-pill px-3" />
+                            <span asp-validation-for="HoTen" class="text-danger small"></span>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label asp-for="Password" class="form-label text-muted">Mật khẩu</label>
+                            <input asp-for="Password" class="form-control rounded-pill px-3" />
+                            <span asp-validation-for="Password" class="text-danger small"></span>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label asp-for="ConfirmPassword" class="form-label text-muted">Xác nhận mật khẩu</label>
+                            <input asp-for="ConfirmPassword" class="form-control rounded-pill px-3" />
+                            <span asp-validation-for="ConfirmPassword" class="text-danger small"></span>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-12 mb-3">
+                            <label asp-for="Email" class="form-label text-muted">Email</label>
+                            <input asp-for="Email" class="form-control rounded-pill px-3" />
+                            <span asp-validation-for="Email" class="text-danger small"></span>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-4">
+                            <label asp-for="PhoneNumber" class="form-label text-muted">Số điện thoại</label>
+                            <input asp-for="PhoneNumber" class="form-control rounded-pill px-3" />
+                            <span asp-validation-for="PhoneNumber" class="text-danger small"></span>
+                        </div>
+                        <div class="col-md-6 mb-4">
+                            <label asp-for="NgaySinh" class="form-label text-muted">Ngày sinh</label>
+                            <input asp-for="NgaySinh" class="form-control rounded-pill px-3" />
+                            <span asp-validation-for="NgaySinh" class="text-danger small"></span>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn btn-success w-100 btn-lg rounded-pill fw-bold">Hoàn Tất Đăng Ký</button>
+                    
+                    <div class="mt-4 text-center">
+                        <span class="text-muted">Đã có tài khoản?</span> 
+                        <a asp-action="Login" class="text-decoration-none fw-bold text-success">Đăng nhập</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
