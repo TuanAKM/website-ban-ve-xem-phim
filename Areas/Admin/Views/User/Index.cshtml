@@ -1,0 +1,55 @@
+@model IEnumerable<MiniCinema.DTOs.UserViewModel>
+@{ ViewData["Title"] = "Quản Lý Tài Khoản User"; }
+<div class="container mt-4">
+    <h2 class="text-primary mb-4"><i class="bi bi-people-fill"></i> HỆ THỐNG ACCOUNT</h2>
+    
+    @if(TempData["Error"] != null) {
+        <div class="alert alert-danger fw-bold"><i class="bi bi-shield-x"></i> @TempData["Error"]</div>
+    }
+    @if(TempData["Success"] != null) {
+        <div class="alert alert-success fw-bold"><i class="bi bi-check-circle"></i> @TempData["Success"]</div>
+    }
+
+    <a asp-action="Create" class="btn btn-primary mb-3"><i class="bi bi-person-plus-fill"></i> Tạo Mới (Admin/Staff)</a>
+    
+    <table class="table table-bordered table-hover align-middle shadow-sm">
+        <thead class="table-dark">
+            <tr>
+                <th>Username</th>
+                <th>Họ Tên</th>
+                <th>Vai Trò (Role)</th>
+                <th>Email / SĐT</th>
+                <th>Thao Tác</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach(var item in Model) {
+                <tr>
+                    <td class="fw-bold">@item.Username</td>
+                    <td>@item.HoTen</td>
+                    <td>
+                        @foreach(var r in item.Roles) {
+                            @if(r == "Admin") { <span class="badge bg-danger fs-6 me-1"><i class="bi bi-star-fill"></i> Admin</span> }
+                            else if(r == "Staff") { <span class="badge bg-primary fs-6 me-1">Nhân viên</span> }
+                            else { <span class="badge border border-success text-success fs-6 me-1">Khách hàng</span> }
+                        }
+                    </td>
+                    <td><small>@item.Email<br/>@item.PhoneNumber</small></td>
+                    <td>
+                        <div class="btn-group">
+                            <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-warning"><i class="bi bi-pencil-square"></i> Sửa</a>
+                            
+                            @if(!item.Roles.Contains("Admin")) {
+                                <form asp-action="Delete" asp-route-id="@item.Id" method="post" onsubmit="return confirm('Bạn có CHẮC CHẮN muốn xóa user @item.Username?');" class="d-inline">
+                                    <button type="submit" class="btn btn-sm btn-danger rounded-end"><i class="bi bi-trash"></i> Xóa</button>
+                                </form>
+                            } else {
+                                <button class="btn btn-sm btn-secondary" disabled title="Không thể xóa Admin"><i class="bi bi-lock-fill"></i> Xóa</button>
+                            }
+                        </div>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

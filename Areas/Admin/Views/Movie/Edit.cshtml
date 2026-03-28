@@ -1,0 +1,54 @@
+@model MiniCinema.Models.Phim
+@{ ViewData["Title"] = "Chỉnh Sửa Phim"; }
+<div class="container mt-4 mb-5">
+    <h2 class="text-primary mb-4 text-center fw-bold">CHỈNH SỬA PHIM</h2>
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow border-0 rounded-4">
+                <div class="card-body p-4">
+                    <form asp-action="Edit">
+                        <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+                        <input type="hidden" asp-for="MaPhim" />
+                        
+                        <div class="mb-3">
+                            <label class="form-label text-muted fw-bold">Mã Phim</label>
+                            <input class="form-control bg-light" value="@Model.MaPhim" disabled />
+                        </div>
+                        <div class="mb-3">
+                            <label asp-for="TenPhim" class="form-label text-muted fw-bold">Tên Phim</label>
+                            <input asp-for="TenPhim" class="form-control" />
+                            <span asp-validation-for="TenPhim" class="text-danger small"></span>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="ThoiLuong" class="form-label text-muted fw-bold">Thời Lượng (phút)</label>
+                                <input asp-for="ThoiLuong" class="form-control" type="number" />
+                                <span asp-validation-for="ThoiLuong" class="text-danger small"></span>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="TheLoai" class="form-label text-muted fw-bold">Thể Loại</label>
+                                <input asp-for="TheLoai" class="form-control" />
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="NhanDoTuoi" class="form-label text-muted fw-bold">Độ Tuổi (VD: 18+, C13)</label>
+                                <input asp-for="NhanDoTuoi" class="form-control" />
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="DinhDang" class="form-label text-muted fw-bold">Định Dạng (VD: 2D, 3D)</label>
+                                <input asp-for="DinhDang" class="form-control" />
+                            </div>
+                        </div>
+                        
+                        <div class="mt-4 pt-3 border-top">
+                            <button type="submit" class="btn btn-warning w-100 fw-bold fs-5 rounded-pill mb-2"><i class="bi bi-save"></i> Lưu Tùy Chỉnh</button>
+                            <a asp-action="Index" class="btn btn-light w-100 rounded-pill">Quay Lại</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@section Scripts { @await Html.PartialAsync("_ValidationScriptsPartial") }

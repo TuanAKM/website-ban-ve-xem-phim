@@ -15,7 +15,11 @@
                 <td>@item.ThoiLuong phút</td>
                 <td>@item.TheLoai</td>
                 <td>
-                    <a href="#" class="btn btn-sm btn-info">Sửa</a>
+                    <div class="btn-group" role="group">
+                        <a asp-action="Details" asp-route-id="@item.MaPhim" class="btn btn-sm btn-info text-white"><i class="bi bi-info-circle"></i> Chi tiết</a>
+                        <a asp-action="Edit" asp-route-id="@item.MaPhim" class="btn btn-sm btn-warning text-dark"><i class="bi bi-pencil-square"></i> Sửa</a>
+                        <a asp-action="Delete" asp-route-id="@item.MaPhim" class="btn btn-sm btn-danger"><i class="bi bi-trash"></i> Xóa</a>
+                    </div>
                 </td>
             </tr>
             }

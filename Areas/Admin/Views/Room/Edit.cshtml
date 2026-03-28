@@ -1,0 +1,41 @@
+@model MiniCinema.Models.PhongChieu
+@{ ViewData["Title"] = "Sửa Tên Phòng"; }
+<div class="container mt-4 mb-5">
+    <h2 class="text-primary mb-4 text-center fw-bold">CHỈNH SỬA PHÒNG CHIẾU</h2>
+    <div class="row justify-content-center">
+        <div class="col-md-5">
+            <div class="card shadow border-0 rounded-4">
+                <div class="card-body p-4">
+                    <form asp-action="Edit">
+                        <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+                        <input type="hidden" asp-for="MaPhong" />
+                        
+                        <div class="mb-3">
+                            <label class="form-label text-muted fw-bold">Mã Phòng</label>
+                            <input class="form-control bg-light" value="@Model.MaPhong" disabled />
+                        </div>
+                        <div class="mb-3">
+                            <label asp-for="TenPhong" class="form-label text-muted fw-bold">Tên Phòng</label>
+                            <input asp-for="TenPhong" class="form-control" />
+                            <span asp-validation-for="TenPhong" class="text-danger small"></span>
+                        </div>
+                        <div class="mb-3">
+                            <label asp-for="LoaiPhong" class="form-label text-muted fw-bold">Phân Loại Phòng</label>
+                            <input asp-for="LoaiPhong" class="form-control" />
+                        </div>
+                        
+                        <div class="alert alert-info small mt-2">
+                            <i class="bi bi-info-circle"></i> Để tránh rủi ro thay đổi toàn bộ mã vé và định dạng của những vé đã bán, hệ thống chỉ cho phép cập nhật tên phòng và nhãn Phân Loại.
+                        </div>
+
+                        <div class="mt-4 pt-3 border-top">
+                            <button type="submit" class="btn btn-warning w-100 fw-bold fs-5 rounded-pill mb-2"><i class="bi bi-save"></i> Lưu Thay Đổi</button>
+                            <a asp-action="Index" class="btn btn-light w-100 rounded-pill">Quay Lại</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@section Scripts { @await Html.PartialAsync("_ValidationScriptsPartial") }

@@ -1,0 +1,28 @@
+@model MiniCinema.Models.PhongChieu
+@{ ViewData["Title"] = "Xác nhận Xóa Phòng"; }
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="alert alert-danger shadow rounded-4 p-4 text-center">
+                <i class="bi bi-exclamation-octagon-fill display-2 text-danger"></i>
+                <h3 class="mt-3 fw-bold">CẢNH BÁO BẢO MẬT: XÓA PHÒNG</h3>
+                <p class="fs-5 mt-2">Việc xóa Phòng chiếu <strong>@Model.TenPhong</strong> là một hành động NGHIÊM TRỌNG.</p>
+                <p>Nó sẽ kích hoạt thuật toán <strong>Cascade Delete</strong> (Xóa Dây Chuyền): Toàn bộ <strong>@Model.TongSoGhe ghế</strong> thiết lập của hàng rạp sẽ bị xóa theo.</p>
+                
+                @if(ViewBag.HasShowtime == true) {
+                    <div class="alert alert-warning mt-3 text-start small">
+                        <strong><i class="bi bi-cone-striped"></i> STOP:</strong> Phòng chiếu này đang dính dáng tới các Suất Chiếu có thật. Rủi ro hỏng Database vé bán là rất lớn. Hãy Hủy Suất Chiếu trước khi Xóa Phòng.
+                    </div>
+                }
+
+                <form asp-action="Delete" method="post" class="mt-4">
+                    <input type="hidden" asp-for="MaPhong" />
+                    <button type="submit" class="btn btn-danger btn-lg rounded-pill px-5 fw-bold"><i class="bi bi-trash"></i> CHẤP NHẬN XÓA LĨNH HẬU QUẢ</button>
+                    <div class="mt-3">
+                        <a asp-action="Index" class="btn btn-light rounded-pill px-5">KHÔNG XÓA NỮA</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

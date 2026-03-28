@@ -1,0 +1,25 @@
+@model MiniCinema.Models.Phim
+@{ ViewData["Title"] = "Xác nhận Xóa Phim"; }
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="alert alert-danger shadow rounded-4 p-4 text-center">
+                <i class="bi bi-exclamation-triangle-fill display-2 text-danger"></i>
+                <h3 class="mt-3 fw-bold">CẢNH BÁO XÓA PHIM</h3>
+                <p class="fs-5 mt-2">Bạn có chắc chắn muốn xóa vĩnh viễn phim <strong>@Model.TenPhim</strong> ra khỏi hệ thống?</p>
+                
+                @if(ViewBag.HasShowtime == true) {
+                    <div class="alert alert-warning mt-3 text-start small">
+                        <strong><i class="bi bi-shield-lock"></i> Xung đột Cảnh Báo:</strong> Phim này hiện đang được thiết lập có <strong>Suất Chiếu</strong> hoạt động. Nếu bạn làm hành động này, toàn bộ lịch chiếu và vé đặt sẽ gặp lỗi hoặc bị Cascading Delete.
+                    </div>
+                }
+
+                <form asp-action="Delete" method="post" class="mt-4">
+                    <input type="hidden" asp-for="MaPhim" />
+                    <button type="submit" class="btn btn-danger btn-lg rounded-pill px-5 fw-bold"><i class="bi bi-trash"></i> Đồng Ý Xóa</button>
+                    <a asp-action="Index" class="btn btn-light btn-lg rounded-pill px-5 ms-2">Hủy Bỏ</a>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

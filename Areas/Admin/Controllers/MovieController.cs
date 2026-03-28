@@ -36,5 +36,70 @@ namespace MiniCinema.Areas.Admin.Controllers
             }
             return View(phim);
         }
+
+        public async Task<IActionResult> Details(string id)
+        {
+            if (id == null) return NotFound();
+            var phim = await _context.Phims.FirstOrDefaultAsync(m => m.MaPhim == id);
+            if (phim == null) return NotFound();
+            return View(phim);
+        }
+
+        public async Task<IActionResult> Edit(string id)
+        {
+            if (id == null) return NotFound();
+            var phim = await _context.Phims.FindAsync(id);
+            if (phim == null) return NotFound();
+            return View(phim);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Edit(string id, Phim phim)
+        {
+            if (id != phim.MaPhim) return NotFound();
+
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    _context.Update(phim);
+                    await _context.SaveChangesAsync();
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    if (!await _context.Phims.AnyAsync(m => m.MaPhim == phim.MaPhim)) return NotFound();
+                    else throw;
+                }
+                return RedirectToAction(nameof(Index));
+            }
+            return View(phim);
+        }
+
+        public async Task<IActionResult> Delete(string id)
+        {
+            if (id == null) return NotFound();
+            var phim = await _context.Phims.FirstOrDefaultAsync(m => m.MaPhim == id);
+            if (phim == null) return NotFound();
+            
+            // Check in use
+            var hasShowtime = await _context.SuatChieus.AnyAsync(s => s.PhimId == id);
+            ViewBag.HasShowtime = hasShowtime;
+            
+            return View(phim);
+        }
+
+        [HttpPost, ActionName("Delete")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteConfirmed(string id)
+        {
+            var phim = await _context.Phims.FindAsync(id);
+            if (phim != null)
+            {
+                _context.Phims.Remove(phim);
+                await _context.SaveChangesAsync();
+            }
+            return RedirectToAction(nameof(Index));
+        }
     }
 }

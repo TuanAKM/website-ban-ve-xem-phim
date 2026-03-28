@@ -1,0 +1,57 @@
+@model MiniCinema.DTOs.UserCreateDto
+@{ ViewData["Title"] = "Tạo Nhân Sự Mới"; }
+<div class="container mt-4 mb-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow border-0 rounded-4">
+                <div class="card-body p-4">
+                    <h3 class="mb-4 text-primary fw-bold text-center">TẠO NHÂN SỰ NỘI BỘ</h3>
+                    <form asp-action="Create">
+                        <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+                        
+                        <div class="mb-3">
+                            <label class="form-label text-muted fw-bold">Tài khoản (Username)</label>
+                            <input asp-for="Username" class="form-control" />
+                            <span asp-validation-for="Username" class="text-danger small"></span>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label text-muted fw-bold">Họ tên</label>
+                                <input asp-for="HoTen" class="form-control" />
+                                <span asp-validation-for="HoTen" class="text-danger small"></span>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label text-muted fw-bold">Cấp quyền (Role)</label>
+                                <select asp-for="Role" class="form-select border-primary fw-bold text-primary">
+                                    <option value="Staff">Quyền Nhân Viên (Staff)</option>
+                                    <option value="Admin">Quyền Quản Trị (Admin)</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label text-muted fw-bold">Điện thoại</label>
+                                <input asp-for="PhoneNumber" class="form-control" />
+                                <span asp-validation-for="PhoneNumber" class="text-danger small"></span>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label text-muted fw-bold">Email</label>
+                                <input asp-for="Email" class="form-control" />
+                                <span asp-validation-for="Email" class="text-danger small"></span>
+                            </div>
+                        </div>
+                        <div class="mb-4 bg-light p-3 rounded-3 border border-danger">
+                            <label class="form-label text-danger fw-bold"><i class="bi bi-key-fill"></i> Mật khẩu khởi tạo</label>
+                            <input asp-for="Password" class="form-control" type="text" placeholder="Gõ pass vào đây cấp cho NV..." />
+                            <span asp-validation-for="Password" class="text-danger small"></span>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary w-100 btn-lg rounded-pill fw-bold mb-2">Tạo Nhân Sự</button>
+                        <a asp-action="Index" class="btn btn-light w-100 rounded-pill">Quay Lại</a>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@section Scripts { @await Html.PartialAsync("_ValidationScriptsPartial") }

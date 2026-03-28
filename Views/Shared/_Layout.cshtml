@@ -48,14 +48,21 @@
                                     <li><hr class="dropdown-divider"></li>
                                 }
 
-                                <li><h6 class="dropdown-header">Nhân Viên & Soát Vé</h6></li>
-                                <li><a class="dropdown-item" asp-area="Admin" asp-controller="Ticket" asp-action="Index">🎫 Tra Cứu & Check-in Vé</a></li>
+                                @if(User.IsInRole("Staff"))
+                                {
+                                    <li><h6 class="dropdown-header">Nhân Viên & Soát Vé</h6></li>
+                                    <li><a class="dropdown-item" asp-area="Admin" asp-controller="Ticket" asp-action="Index">🎫 Tra Cứu & Check-in Vé</a></li>
+                                }
                                 
                                 @if(User.IsInRole("Admin"))
                                 {
                                     <li><hr class="dropdown-divider"></li>
                                     <li><h6 class="dropdown-header">Kế Toán</h6></li>
                                     <li><a class="dropdown-item text-danger fw-bold" asp-area="Admin" asp-controller="Report" asp-action="Index">💰 Báo Cáo Doanh Thu</a></li>
+                                    
+                                    <li><hr class="dropdown-divider"></li>
+                                    <li><h6 class="dropdown-header">Dữ Liệu Hệ Thống</h6></li>
+                                    <li><a class="dropdown-item" asp-area="Admin" asp-controller="User" asp-action="Index">👥 Quản Lý Tài Khoản</a></li>
                                 }
                             </ul>
                         </li>

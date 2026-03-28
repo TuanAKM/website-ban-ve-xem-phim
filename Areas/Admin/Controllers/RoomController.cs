@@ -95,5 +95,68 @@ namespace MiniCinema.Areas.Admin.Controllers
 
             return View(dto);
         }
+
+        public async Task<IActionResult> Details(string id)
+        {
+            if (id == null) return NotFound();
+            var p = await _context.PhongChieus.FirstOrDefaultAsync(m => m.MaPhong == id);
+            if (p == null) return NotFound();
+            return View(p);
+        }
+
+        public async Task<IActionResult> Edit(string id)
+        {
+            if (id == null) return NotFound();
+            var p = await _context.PhongChieus.FindAsync(id);
+            if (p == null) return NotFound();
+            return View(p);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Edit(string id, PhongChieu p)
+        {
+            if (id != p.MaPhong) return NotFound();
+
+            if (ModelState.IsValid)
+            {
+                var existing = await _context.PhongChieus.FindAsync(id);
+                if (existing != null)
+                {
+                    existing.TenPhong = p.TenPhong;
+                    existing.LoaiPhong = p.LoaiPhong;
+                    await _context.SaveChangesAsync();
+                }
+                return RedirectToAction(nameof(Index));
+            }
+            return View(p);
+        }
+
+        public async Task<IActionResult> Delete(string id)
+        {
+            if (id == null) return NotFound();
+            var p = await _context.PhongChieus.FirstOrDefaultAsync(m => m.MaPhong == id);
+            if (p == null) return NotFound();
+
+            var hasShowtime = await _context.SuatChieus.AnyAsync(s => s.PhongChieuId == id);
+            ViewBag.HasShowtime = hasShowtime;
+
+            return View(p);
+        }
+
+        [HttpPost, ActionName("Delete")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteConfirmed(string id)
+        {
+            var p = await _context.PhongChieus.Include(r => r.Ghes).FirstOrDefaultAsync(r => r.MaPhong == id);
+            if (p != null)
+            {
+                // Xoá toàn bộ ghế của phòng (Cascade bằng tay nếu DB không set cascade xoá mềm)
+                _context.Ghes.RemoveRange(p.Ghes);
+                _context.PhongChieus.Remove(p);
+                await _context.SaveChangesAsync();
+            }
+            return RedirectToAction(nameof(Index));
+        }
     }
 }

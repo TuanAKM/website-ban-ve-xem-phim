@@ -3,18 +3,25 @@
 <div class="container mt-4">
     <h2>Danh sách suất chiếu</h2>
     <a asp-action="Create" class="btn btn-primary mb-3">Tạo lịch chiếu</a>
-    <table class="table table-bordered">
-        <thead>
-            <tr><th>Phim</th><th>Phòng</th><th>Bắt đầu</th><th>Kết thúc</th></tr>
+    <table class="table table-bordered table-hover align-middle">
+        <thead class="table-dark">
+            <tr><th>Phim</th><th>Phòng</th><th>Giờ Chiếu</th><th>Kết Thúc</th><th>Thao Tác</th></tr>
         </thead>
         <tbody>
             @if(Model != null) {
                 @foreach(var item in Model) {
                 <tr>
-                    <td>@item.Phim!.TenPhim</td>
-                    <td>@item.PhongChieu!.TenPhong</td>
-                    <td>@item.GioBatDau.ToString("dd/MM/yyyy HH:mm")</td>
-                    <td>@item.GioKetThuc.ToString("dd/MM/yyyy HH:mm")</td>
+                    <td class="fw-bold">@item.Phim!.TenPhim</td>
+                    <td><span class="badge bg-secondary">@item.PhongChieu!.TenPhong</span></td>
+                    <td class="text-success fw-bold">@item.GioBatDau.ToString("dd/MM/yyyy HH:mm")</td>
+                    <td class="text-danger">@item.GioKetThuc.ToString("HH:mm")</td>
+                    <td>
+                        <div class="btn-group" role="group">
+                            <a asp-action="Details" asp-route-id="@item.MaSuatChieu" class="btn btn-sm btn-info text-white"><i class="bi bi-info-circle"></i> Chi tiết</a>
+                            <a asp-action="Edit" asp-route-id="@item.MaSuatChieu" class="btn btn-sm btn-warning text-dark"><i class="bi bi-pencil-square"></i> Sửa</a>
+                            <a asp-action="Delete" asp-route-id="@item.MaSuatChieu" class="btn btn-sm btn-danger"><i class="bi bi-trash"></i> Hủy</a>
+                        </div>
+                    </td>
                 </tr>
                 }
             }

@@ -1,0 +1,49 @@
+@model MiniCinema.Models.SuatChieu
+@{ ViewData["Title"] = "Chỉnh Sửa Suất Chiếu"; }
+<div class="container mt-4 mb-5">
+    <h2 class="text-primary mb-4 text-center fw-bold">CẬP NHẬT SUẤT CHIẾU</h2>
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow border-0 rounded-4">
+                <div class="card-body p-4">
+                    @if(ViewBag.HasTickets == true) {
+                        <div class="alert alert-danger mb-4">
+                            <strong><i class="bi bi-ban"></i> ĐÃ BÁN VÉ!</strong> Bạn KHÔNG THỂ thay đổi Phòng, Phim hay Giờ Chiếu của suất này vì đã có vé được bán ra.
+                        </div>
+                    }
+
+                    <form asp-action="Edit">
+                        <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+                        <input type="hidden" asp-for="MaSuatChieu" />
+                        
+                        <div class="mb-3">
+                            <label class="form-label text-muted fw-bold">Chọn Phim</label>
+                            <select asp-for="PhimId" class="form-select bg-light" asp-items="ViewBag.PhimId" disabled="@(ViewBag.HasTickets == true)"></select>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label text-muted fw-bold">Chọn Phòng</label>
+                            <select asp-for="PhongChieuId" class="form-select bg-light" asp-items="ViewBag.PhongChieuId" disabled="@(ViewBag.HasTickets == true)"></select>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="GioBatDau" class="form-label text-muted fw-bold">Giờ Bắt Đầu</label>
+                                <input asp-for="GioBatDau" class="form-control" disabled="@(ViewBag.HasTickets == true)" />
+                                <span asp-validation-for="GioBatDau" class="text-danger small"></span>
+                            </div>
+                        </div>
+
+                        <div class="mt-4 pt-3 border-top">
+                            @if(ViewBag.HasTickets != true) {
+                                <button type="submit" class="btn btn-warning w-100 fw-bold fs-5 rounded-pill mb-2"><i class="bi bi-save"></i> Áp Dụng Lịch Mới</button>
+                            } else {
+                                <button type="button" class="btn btn-warning w-100 fw-bold fs-5 rounded-pill mb-2" disabled><i class="bi bi-save"></i> Không thể Sửa vì Đã Bán Vé</button>
+                            }
+                            <a asp-action="Index" class="btn btn-light w-100 rounded-pill">Quay Lại</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@section Scripts { @await Html.PartialAsync("_ValidationScriptsPartial") }
