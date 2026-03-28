@@ -1,0 +1,70 @@
+@model IEnumerable<MiniCinema.Models.Ve>
+
+@{
+    ViewData["Title"] = "Vé Của Bạn";
+}
+
+<div class="container mt-4 mb-5">
+    <div class="text-center mb-5">
+        <h1 class="text-success"><i class="bi bi-check-circle-fill"></i> Đặt Vé Thành Công!</h1>
+        <p class="text-muted">Cảm ơn bạn đã sử dụng dịch vụ đặt vé của chúng tôi.</p>
+    </div>
+
+    <div class="row justify-content-center">
+        @foreach (var v in Model)
+        {
+            <div class="col-md-5 mb-4">
+                <div class="card shadow border-0" style="border-radius: 20px; overflow: hidden; position: relative;">
+                    <div class="bg-primary text-white text-center p-3">
+                        <h4 class="m-0 fw-bold">CINEMA TICKET</h4>
+                    </div>
+                    <div class="card-body p-4 bg-light">
+                        <h4 class="text-dark fw-bold mb-1">@v.SuatChieu!.Phim!.TenPhim</h4>
+                        <p class="text-muted mb-4 border-bottom pb-3">Phòng chiếu: <strong>@v.SuatChieu.PhongChieu!.TenPhong</strong></p>
+                        
+                        <div class="row mb-3">
+                            <div class="col-6">
+                                <small class="text-muted d-block">Giờ chiếu</small>
+                                <strong class="fs-5">@v.SuatChieu.GioBatDau.ToString("HH:mm")</strong>
+                            </div>
+                            <div class="col-6">
+                                <small class="text-muted d-block">Ngày chiếu</small>
+                                <strong class="fs-5">@v.SuatChieu.GioBatDau.ToString("dd/MM/yyyy")</strong>
+                            </div>
+                        </div>
+
+                        <div class="row mb-4">
+                            <div class="col-6">
+                                <small class="text-muted d-block">Ghế</small>
+                                <strong class="fs-2 text-primary">@v.Ghe!.MaGhe</strong>
+                            </div>
+                            <div class="col-6">
+                                <small class="text-muted d-block">Giá Vé</small>
+                                <strong class="fs-4 text-danger">@v.GiaVe.ToString("#,##0") đ</strong>
+                            </div>
+                        </div>
+
+                        <!-- Fake QR CODE text -->
+                        <div class="text-center mt-3 pt-3 border-top border-dashed">
+                             <div class="bg-dark text-white p-2 text-center rounded d-inline-block shadow-sm">
+                                 <div style="font-family: monospace; letter-spacing: 2px;">QR_CODE_DATA</div>
+                                 <small class="d-block mt-1">@v.MaVe</small>
+                             </div>
+                             <p class="small text-muted mt-2 mb-0">Vui lòng quét mã QR tại quầy vé trước lúc suất chiếu bắt đầu.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+    
+    <div class="text-center mt-4">
+        <a asp-action="Index" class="btn btn-outline-primary rounded-pill px-4">Về lại Trang Chủ</a>
+    </div>
+</div>
+
+<style>
+.border-dashed {
+    border-top: 2px dashed #ccc !important;
+}
+</style>

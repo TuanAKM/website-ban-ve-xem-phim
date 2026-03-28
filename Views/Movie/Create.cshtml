@@ -1,0 +1,24 @@
+@model MiniCinema.Models.Phim
+@{ ViewData["Title"] = "Thêm Phim Mới"; }
+<div class="container mt-4">
+    <h2>Thêm Phim Mới</h2>
+    <form asp-action="Create">
+        <div class="mb-3">
+            <label>Mã Phim</label>
+            <input asp-for="MaPhim" class="form-control" />
+        </div>
+        <div class="mb-3">
+            <label>Tên Phim</label>
+            <input asp-for="TenPhim" class="form-control" />
+        </div>
+        <div class="mb-3">
+            <label>Thời lượng (phút)</label>
+            <input asp-for="ThoiLuong" class="form-control" type="number" />
+        </div>
+        <div class="mb-3">
+            <label>Thể loại</label>
+            <input asp-for="TheLoai" class="form-control" />
+        </div>
+        <button type="submit" class="btn btn-success">Lưu</button>
+    </form>
+</div>

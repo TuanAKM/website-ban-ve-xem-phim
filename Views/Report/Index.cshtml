@@ -1,0 +1,29 @@
+@model IEnumerable<MiniCinema.Controllers.ReportViewModel>
+@{ ViewData["Title"] = "Báo Cáo Doanh Thu"; }
+<div class="container mt-4">
+    <h2 class="text-primary mb-4">Báo Cáo Doanh Thu Theo Suất Chiếu</h2>
+    <table class="table table-bordered table-striped shadow-sm">
+        <thead class="table-dark">
+            <tr>
+                <th>Phim</th>
+                <th>Giờ Bắt Đầu</th>
+                <th>Tổng Số Vé</th>
+                <th>Tổng Tền</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (Model != null && Model.Any()) {
+                @foreach(var item in Model) {
+                    <tr>
+                        <td class="fw-bold">@item.TenPhim</td>
+                        <td>@item.GioBatDau.ToString("dd/MM/yyyy HH:mm")</td>
+                        <td class="text-center">@item.TongSoVe</td>
+                        <td class="text-danger fw-bold text-end">@item.TongDoanhThu.ToString("#,##0") đ</td>
+                    </tr>
+                }
+            } else {
+                <tr><td colspan="4" class="text-center text-muted">Chưa có giao dịch nào hoàn thành.</td></tr>
+            }
+        </tbody>
+    </table>
+</div>

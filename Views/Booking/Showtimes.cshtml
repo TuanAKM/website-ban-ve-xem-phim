@@ -1,0 +1,36 @@
+@model IEnumerable<MiniCinema.Models.SuatChieu>
+
+@{
+    ViewData["Title"] = "Các suất chiếu khả dụng";
+}
+
+<div class="container mt-4">
+    <h2 class="mb-4 text-primary text-center">Các suất chiếu khả dụng</h2>
+    <div class="row">
+        @if (!Model.Any())
+        {
+            <div class="col-12 text-center text-muted">
+                <h4>Không có suất chiếu nào khả dụng. Vui lòng quay lại sau!</h4>
+                <a asp-action="Index" class="btn btn-secondary mt-3">Về danh sách phim</a>
+            </div>
+        }
+        else
+        {
+            foreach (var group in Model.GroupBy(s => s.GioBatDau.Date))
+            {
+                <div class="col-12 mb-4">
+                    <h4 class="text-dark border-bottom pb-2">Ngày: @group.Key.ToString("dd/MM/yyyy")</h4>
+                    <div class="d-flex flex-wrap gap-3 mt-3">
+                        @foreach (var s in group)
+                        {
+                            <a asp-action="SeatMap" asp-route-showtimeId="@s.MaSuatChieu" class="btn btn-outline-primary px-4 py-2 rounded-3 shadow-sm d-flex flex-column align-items-center gap-1">
+                                <span class="fw-bold fs-5">@s.GioBatDau.ToString("HH:mm")</span>
+                                <small class="text-muted">@s.PhongChieu!.TenPhong</small>
+                            </a>
+                        }
+                    </div>
+                </div>
+            }
+        }
+    </div>
+</div>

@@ -1,0 +1,23 @@
+@model IEnumerable<MiniCinema.Models.SuatChieu>
+@{ ViewData["Title"] = "Quản lý Suất Chiếu"; }
+<div class="container mt-4">
+    <h2>Danh sách suất chiếu</h2>
+    <a asp-action="Create" class="btn btn-primary mb-3">Tạo lịch chiếu</a>
+    <table class="table table-bordered">
+        <thead>
+            <tr><th>Phim</th><th>Phòng</th><th>Bắt đầu</th><th>Kết thúc</th></tr>
+        </thead>
+        <tbody>
+            @if(Model != null) {
+                @foreach(var item in Model) {
+                <tr>
+                    <td>@item.Phim!.TenPhim</td>
+                    <td>@item.PhongChieu!.TenPhong</td>
+                    <td>@item.GioBatDau.ToString("dd/MM/yyyy HH:mm")</td>
+                    <td>@item.GioKetThuc.ToString("dd/MM/yyyy HH:mm")</td>
+                </tr>
+                }
+            }
+        </tbody>
+    </table>
+</div>

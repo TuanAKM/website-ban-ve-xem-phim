@@ -1,0 +1,24 @@
+@model IEnumerable<MiniCinema.Models.Phim>
+@{ ViewData["Title"] = "Quản lý Phim"; }
+<div class="container mt-4">
+    <h2>Danh sách phim</h2>
+    <a asp-action="Create" class="btn btn-primary mb-3">Thêm mới</a>
+    <table class="table table-bordered table-striped">
+        <thead>
+            <tr><th>Mã Phim</th><th>Tên Phim</th><th>Thời Lượng</th><th>Thể Loại</th><th>Action</th></tr>
+        </thead>
+        <tbody>
+            @foreach(var item in Model) {
+            <tr>
+                <td>@item.MaPhim</td>
+                <td>@item.TenPhim</td>
+                <td>@item.ThoiLuong phút</td>
+                <td>@item.TheLoai</td>
+                <td>
+                    <a href="#" class="btn btn-sm btn-info">Sửa</a>
+                </td>
+            </tr>
+            }
+        </tbody>
+    </table>
+</div>

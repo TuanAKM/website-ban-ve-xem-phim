@@ -1,0 +1,25 @@
+@model MiniCinema.DTOs.ShowtimeCreateDto
+@{ ViewData["Title"] = "Tạo Suất Chiếu"; }
+<div class="container mt-4">
+    <h2>Tạo Suất Chiếu</h2>
+    <div asp-validation-summary="All" class="text-danger"></div>
+    <form asp-action="Create">
+        <div class="mb-3">
+            <label>Mã Suất Chiếu (LCxx)</label>
+            <input asp-for="MaSuatChieu" class="form-control" />
+        </div>
+        <div class="mb-3">
+            <label>Phim</label>
+            <select asp-for="PhimId" asp-items="ViewBag.PhimId" class="form-control"></select>
+        </div>
+        <div class="mb-3">
+            <label>Phòng chiếu</label>
+            <select asp-for="PhongChieuId" asp-items="ViewBag.PhongChieuId" class="form-control"></select>
+        </div>
+        <div class="mb-3">
+            <label>Giờ Bắt Đầu</label>
+            <input asp-for="GioBatDau" type="datetime-local" class="form-control" />
+        </div>
+        <button type="submit" class="btn btn-success">Tạo Lịch</button>
+    </form>
+</div>

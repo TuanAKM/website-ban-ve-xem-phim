@@ -1,0 +1,29 @@
+@model IEnumerable<MiniCinema.Models.Phim>
+
+@{
+    ViewData["Title"] = "Phim Đang Chiếu";
+}
+
+<div class="container mt-4">
+    <h1 class="mb-4 text-primary text-center">Phim Đang Chiếu</h1>
+    <div class="row row-cols-1 row-cols-md-3 g-4">
+        @foreach (var p in Model)
+        {
+            <div class="col">
+                <div class="card h-100 shadow-sm border-0 bg-light rounded-4">
+                    <div class="card-body text-center d-flex flex-column justify-content-between">
+                        <div>
+                            <h4 class="card-title fw-bold text-dark mt-3">@p.TenPhim</h4>
+                            <p class="text-muted"><i class="bi bi-clock"></i> @p.ThoiLuong phút</p>
+                            @if (!string.IsNullOrEmpty(p.NhanDoTuoi))
+                            {
+                                <span class="badge bg-danger mb-3">@p.NhanDoTuoi</span>
+                            }
+                        </div>
+                        <a asp-action="Showtimes" asp-route-movieId="@p.MaPhim" class="btn btn-outline-primary mt-3 w-100 rounded-pill fw-bold">Mua Vé Ngay</a>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>
