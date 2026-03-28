@@ -1,0 +1,30 @@
+@model IEnumerable<MiniCinema.Models.PhongChieu>
+@{ ViewData["Title"] = "Quản Lý Cấu Hình Phòng"; }
+<div class="container mt-4">
+    <h2 class="text-primary mb-4">Cấu Hình Phòng Chiếu & Sơ Đồ Ghế</h2>
+    <a asp-action="Create" class="btn btn-primary mb-3"><i class="bi bi-plus-circle"></i> Tạo Phòng Mới</a>
+    <table class="table table-bordered table-striped shadow-sm">
+        <thead class="table-dark">
+            <tr>
+                <th>Mã Phòng</th>
+                <th>Tên Phòng</th>
+                <th>Phân Loại</th>
+                <th>Tổng Số Ghế</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (Model != null && Model.Any()) {
+                @foreach (var p in Model) {
+                    <tr>
+                        <td class="fw-bold">@p.MaPhong</td>
+                        <td>@p.TenPhong</td>
+                        <td><span class="badge bg-secondary">@p.LoaiPhong</span></td>
+                        <td><span class="text-success fw-bold">@p.TongSoGhe</span> ghế</td>
+                    </tr>
+                }
+            } else {
+                <tr><td colspan="4" class="text-center text-muted">Chưa có phòng chiếu nào.</td></tr>
+            }
+        </tbody>
+    </table>
+</div>

@@ -10,7 +10,7 @@ using Microsoft.AspNetCore.Authorization;
 namespace MiniCinema.Areas.Admin.Controllers
 {
     [Area("Admin")]
-    [Authorize(Roles = "Admin, Staff")]
+    [Authorize(Roles = "Admin")]
     public class ShowtimeController : Controller
     {
         private readonly ApplicationDbContext _context;

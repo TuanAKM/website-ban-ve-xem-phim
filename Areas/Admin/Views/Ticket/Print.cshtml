@@ -1,0 +1,42 @@
+@model MiniCinema.Models.Ve
+@{
+    Layout = null; // Blank HTML layout
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <title>In Vé - @Model.MaVe</title>
+    <style>
+        body { font-family: 'Courier New', Courier, monospace; background: #fff; text-align: center; font-size: 14px; margin: 0; padding: 20px;}
+        .ticket { width: 300px; margin: 0 auto; border: 1px solid #000; padding: 20px; box-sizing: border-box; }
+        .title { font-size: 20px; font-weight: bold; border-bottom: 2px dashed #000; padding-bottom: 10px; margin-bottom: 10px; }
+        .item { text-align: left; margin: 5px 0; display: flex; justify-content: space-between;}
+        .hl { font-weight: bold; font-size: 16px; }
+        .qr { margin: 20px 0; padding: 20px; background: #f0f0f0; border: 1px dotted #333;}
+        .footer { font-size: 11px; margin-top: 20px; border-top: 1px dashed #000; padding-top: 10px;}
+    </style>
+</head>
+<body>
+    <div class="ticket">
+        <div class="title">MINI CINEMA TICKET</div>
+        
+        <div class="item"><span>Phim:</span> <span class="hl">@Model.SuatChieu?.Phim?.TenPhim</span></div>
+        <div class="item"><span>Phòng:</span> <span class="hl">@Model.SuatChieu?.PhongChieu?.TenPhong</span></div>
+        <div class="item"><span>Ngày chiếu:</span> <span>@Model.SuatChieu?.GioBatDau.ToString("dd/MM/yyyy")</span></div>
+        <div class="item"><span>Giờ chiếu:</span> <span class="hl">@Model.SuatChieu?.GioBatDau.ToString("HH:mm")</span></div>
+        <div class="item"><span>Ghế ngồi:</span> <span class="hl" style="font-size: 24px;">@Model.Ghe?.MaGhe</span></div>
+        <div class="item"><span>Tổng Giá:</span> <span>@Model.GiaVe.ToString("#,##0") VND</span></div>
+        
+        <div class="qr">MÃ VÉ:<br>@Model.MaVe</div>
+        
+        <div class="item"><span>T.Thái:</span> <span>@Model.TrangThaiVe</span></div>
+        <div class="footer">Giữ vé kỹ để kiểm soát viên scan QR code. Vui lòng vào rạp trước giờ chiếu 10 phút.</div>
+    </div>
+    
+    <script>
+        // Gọi thẳng lệnh print khi load cửa sổ
+        window.onload = function() { window.print(); }
+    </script>
+</body>
+</html>
