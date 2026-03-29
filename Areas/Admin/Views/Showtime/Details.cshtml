@@ -20,7 +20,21 @@
                 </div>
                 <div class="row mb-3 fs-5">
                     <div class="col-sm-4 text-muted fw-bold">Trạng Thái:</div>
-                    <div class="col-sm-8"><span class="text-success fw-bold">ĐANG MỞ BÁN</span></div>
+                    <div class="col-sm-8">
+                        @if (Model.GioKetThuc < DateTime.Now)
+                        {
+                            <span class="badge bg-secondary">ĐÃ KẾT THÚC</span>
+                        }
+                        else if (Model.GioBatDau <= DateTime.Now && Model.GioKetThuc >= DateTime.Now)
+                        {
+                            <span class="badge bg-success spinner-grow spinner-grow-sm text-light me-1" role="status"></span>
+                            <span class="badge bg-success">ĐANG CHIẾU</span>
+                        }
+                        else
+                        {
+                            <span class="badge bg-primary">SẮP CHIẾU (MỞ BÁN)</span>
+                        }
+                    </div>
                 </div>
                 <div class="row mb-3 fs-5">
                     <div class="col-sm-4 text-muted fw-bold">Dự Kiến Xong:</div>
@@ -28,7 +42,14 @@
                 </div>
                 
                 <div class="mt-4 pt-3 border-top">
-                    <a asp-action="Edit" asp-route-id="@Model.MaSuatChieu" class="btn btn-warning rounded-pill px-4 fw-bold me-2"><i class="bi bi-pencil"></i> Đổi Lịch</a>
+                    @if (Model.GioKetThuc >= DateTime.Now)
+                    {
+                        <a asp-action="Edit" asp-route-id="@Model.MaSuatChieu" class="btn btn-warning rounded-pill px-4 fw-bold me-2"><i class="bi bi-pencil"></i> Đổi Lịch</a>
+                    }
+                    else
+                    {
+                        <button class="btn btn-secondary rounded-pill px-4 fw-bold me-2" disabled><i class="bi bi-lock-fill"></i> Đã Khóa Sửa Đổi</button>
+                    }
                     <a asp-action="Index" class="btn btn-outline-secondary rounded-pill px-4">Đóng</a>
                 </div>
             </div>
