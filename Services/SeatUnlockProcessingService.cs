@@ -33,24 +33,18 @@ namespace MiniCinema.Services
         private async Task ProcessUnlockSeats()
         {
             using var scope = _services.CreateScope();
-            var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
             var hubContext = scope.ServiceProvider.GetRequiredService<IHubContext<SeatHub>>();
+            var seatLockService = scope.ServiceProvider.GetRequiredService<ISeatLockService>();
 
-            var timeLimit = DateTime.Now.AddMinutes(-5);
-            
-            var expiredSeats = await context.Ghes
-                .Where(g => g.TrangThai == TrangThaiGhe.DangChon && g.ThoiGianKhoa < timeLimit)
-                .ToListAsync();
+            var expiredLocks = seatLockService.GetExpiredLocks(5);
 
-            if (expiredSeats.Any())
+            foreach (var lockInfo in expiredLocks)
             {
-                foreach (var ghe in expiredSeats)
-                {
-                    ghe.TrangThai = TrangThaiGhe.Trong;
-                    ghe.ThoiGianKhoa = null;
-                    await hubContext.Clients.All.SendAsync("SeatStatusChanged", ghe.MaGhe, "Trong");
-                }
-                await context.SaveChangesAsync();
+                // Xóa khỏi cache
+                seatLockService.UnlockSeat(lockInfo.ShowtimeId, lockInfo.SeatId);
+                
+                // Nhả ghế cho những người đang xem cùng suất chiếu
+                await hubContext.Clients.Group(lockInfo.ShowtimeId).SendAsync("SeatStatusChanged", lockInfo.SeatId, "Trong");
             }
         }
     }

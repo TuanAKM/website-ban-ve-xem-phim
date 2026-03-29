@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using MiniCinema.Data;
 using MiniCinema.DTOs;
 using MiniCinema.Services;
+using MiniCinema.Models;
 using System;
 using System.Linq;
 using System.Security.Claims;
@@ -16,12 +17,14 @@ namespace MiniCinema.Controllers
         private readonly ApplicationDbContext _context;
         private readonly IShowtimeService _showtimeService;
         private readonly IBookingService _bookingService;
+        private readonly ISeatLockService _seatLockService;
 
-        public BookingController(ApplicationDbContext context, IShowtimeService showtimeService, IBookingService bookingService)
+        public BookingController(ApplicationDbContext context, IShowtimeService showtimeService, IBookingService bookingService, ISeatLockService seatLockService)
         {
             _context = context;
             _showtimeService = showtimeService;
             _bookingService = bookingService;
+            _seatLockService = seatLockService;
         }
 
         public async Task<IActionResult> Index()
@@ -46,6 +49,17 @@ namespace MiniCinema.Controllers
                 .FirstOrDefaultAsync(s => s.MaSuatChieu == showtimeId);
 
             if (showtime == null) return NotFound();
+
+            var soldSeats = await _context.Ves
+                .Where(v => v.SuatChieuId == showtimeId && v.TrangThaiVe != TrangThaiVe.Huy)
+                .Select(v => v.GheId)
+                .ToListAsync();
+
+            var lockedSeats = _seatLockService.GetLockedSeats(showtimeId)
+                .Select(l => l.SeatId).ToList();
+
+            ViewBag.SoldSeats = soldSeats;
+            ViewBag.LockedSeats = lockedSeats;
 
             return View(showtime);
         }

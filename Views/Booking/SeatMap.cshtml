@@ -19,12 +19,29 @@
             <div class="seat-map d-flex flex-wrap justify-content-center gap-3">
                 @if (Model.PhongChieu!.Ghes != null)
                 {
+                    var soldSeats = (List<string>)ViewBag.SoldSeats;
+                    var lockedSeats = (List<string>)ViewBag.LockedSeats;
+
                     foreach (var ghe in Model.PhongChieu.Ghes.OrderBy(g => g.MaGhe))
                     {
-                        string colorClass = "bg-secondary"; // Trong
-                        if (ghe.TrangThai == MiniCinema.Models.TrangThaiGhe.DangChon) colorClass = "bg-warning";
-                        if (ghe.TrangThai == MiniCinema.Models.TrangThaiGhe.DaBan) colorClass = "bg-danger";
-                        if (ghe.TrangThai == MiniCinema.Models.TrangThaiGhe.Hong) colorClass = "bg-dark";
+                        string status = "Trong";
+                        string colorClass = "bg-secondary"; // Trống
+
+                        if (ghe.TrangThai == MiniCinema.Models.TrangThaiGhe.Hong)
+                        {
+                            status = "Hong";
+                            colorClass = "bg-dark";
+                        }
+                        else if (soldSeats.Contains(ghe.MaGhe))
+                        {
+                            status = "DaBan";
+                            colorClass = "bg-danger";
+                        }
+                        else if (lockedSeats.Contains(ghe.MaGhe))
+                        {
+                            status = "DangChon";
+                            colorClass = "bg-warning";
+                        }
 
                         int priceDetails = 50000;
                         if (ghe.LoaiGhe == MiniCinema.Models.LoaiGhe.Vip) priceDetails += 20000;
@@ -34,7 +51,7 @@
                              class="seat p-2 text-center text-white cursor-pointer @colorClass rounded shadow-sm"
                              style="width: 55px; height: 50px; cursor: pointer; display: flex; align-items: center; justify-content: center; user-select: none;"
                              data-id="@ghe.MaGhe"
-                             data-status="@ghe.TrangThai"
+                             data-status="@status"
                              data-price="@priceDetails"
                              onclick="toggleSeat('@ghe.MaGhe')">
                             <strong>@ghe.MaGhe</strong>
@@ -98,19 +115,24 @@
             seatEl.dataset.status = newStatus;
 
             const idx = selectedSeats.indexOf(seatId);
-            // If someone else unlocked or locked what you thought you had, update view (except if it's changing back to Trong on timeout)
-            if (idx > -1 && newStatus !== "DangChon" && newStatus !== "DaBan" && newStatus !== "Trong") {
-                selectedSeats.splice(idx, 1);
-                updatePanel();
-            }
-            if (idx > -1 && newStatus === "Trong") {
-                 // Timeout occurred locally, remove
+            // Nếu phát sinh thay đổi từ người khác trên ghế mình đã chọn (trừ khi chính mình chọn thành công)
+            if (idx > -1 && newStatus !== "DangChon" && newStatus !== "Trong") {
+                 // Ghế này vừa có người mua xong (DaBan)
                  selectedSeats.splice(idx, 1);
                  updatePanel();
             }
+            if (idx > -1 && newStatus === "Trong") {
+                 // Hết hạn giữ chỗ 5 phút, tự động xóa khỏi danh sách chọn của mình
+                 selectedSeats.splice(idx, 1);
+                 updatePanel();
+                 alert("Thời gian giữ chỗ ghế " + seatId + " đã hết!");
+            }
         });
 
-        hubConnection.start().catch(err => console.error(err));
+        hubConnection.start().then(() => {
+            console.log("SignalR Connected");
+            hubConnection.invoke("JoinShowtime", "@Model.MaSuatChieu");
+        }).catch(err => console.error(err));
 
         let selectedSeats = [];
         let timerInterval = null;

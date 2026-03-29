@@ -27,6 +27,7 @@ builder.Services.ConfigureApplicationCookie(options =>
 
 builder.Services.AddScoped<IShowtimeService, ShowtimeService>();
 builder.Services.AddScoped<IBookingService, BookingService>();
+builder.Services.AddSingleton<ISeatLockService, SeatLockService>();
 builder.Services.AddHostedService<SeatUnlockProcessingService>();
 builder.Services.AddSignalR();
 

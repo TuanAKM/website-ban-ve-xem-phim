@@ -14,42 +14,39 @@ namespace MiniCinema.Services
     {
         private readonly ApplicationDbContext _context;
         private readonly IHubContext<SeatHub> _hubContext;
+        private readonly ISeatLockService _seatLockService;
 
-        public BookingService(ApplicationDbContext context, IHubContext<SeatHub> hubContext)
+        public BookingService(ApplicationDbContext context, IHubContext<SeatHub> hubContext, ISeatLockService seatLockService)
         {
             _context = context;
             _hubContext = hubContext;
+            _seatLockService = seatLockService;
         }
 
         public async Task<bool> LockSeatAsync(string suatChieuId, string maGhe)
         {
             var ghe = await _context.Ghes.FindAsync(maGhe);
-            if (ghe == null || ghe.TrangThai == TrangThaiGhe.DaBan || ghe.TrangThai == TrangThaiGhe.Hong) return false;
+            if (ghe == null || ghe.TrangThai == TrangThaiGhe.Hong) return false;
 
-            if (ghe.TrangThai == TrangThaiGhe.DangChon)
+            var isSold = await _context.Ves.AnyAsync(v => v.SuatChieuId == suatChieuId && v.GheId == maGhe && v.TrangThaiVe != TrangThaiVe.Huy);
+            if (isSold) return false;
+
+            bool success = _seatLockService.LockSeat(suatChieuId, maGhe);
+            if (success)
             {
-                if (ghe.ThoiGianKhoa.HasValue && (DateTime.Now - ghe.ThoiGianKhoa.Value).TotalMinutes < 5) return false;
+                await _hubContext.Clients.Group(suatChieuId).SendAsync("SeatStatusChanged", maGhe, "DangChon");
             }
-
-            ghe.TrangThai = TrangThaiGhe.DangChon;
-            ghe.ThoiGianKhoa = DateTime.Now;
-            await _context.SaveChangesAsync();
-
-            await _hubContext.Clients.All.SendAsync("SeatStatusChanged", maGhe, "DangChon");
-            return true;
+            return success;
         }
 
         public async Task<bool> UnlockSeatAsync(string suatChieuId, string maGhe)
         {
-            var ghe = await _context.Ghes.FindAsync(maGhe);
-            if (ghe == null || ghe.TrangThai != TrangThaiGhe.DangChon) return false;
-
-            ghe.TrangThai = TrangThaiGhe.Trong;
-            ghe.ThoiGianKhoa = null;
-            await _context.SaveChangesAsync();
-
-            await _hubContext.Clients.All.SendAsync("SeatStatusChanged", maGhe, "Trong");
-            return true;
+            var success = _seatLockService.UnlockSeat(suatChieuId, maGhe);
+            if (success)
+            {
+                await _hubContext.Clients.Group(suatChieuId).SendAsync("SeatStatusChanged", maGhe, "Trong");
+            }
+            return success;
         }
 
         public async Task<(bool IsSuccess, string? Error, GiaoDich? GiaoDich)> ProcessPaymentAsync(BookingRequestDto bookingDto)
@@ -64,17 +61,19 @@ namespace MiniCinema.Services
                 foreach (var seatId in bookingDto.SelectedSeatIds)
                 {
                     var ghe = await _context.Ghes.FindAsync(seatId);
-                    if (ghe == null || ghe.TrangThai != TrangThaiGhe.DangChon)
-                        return (false, $"Ghế {seatId} không hợp lệ hoặc đã bị người khác mua.", null);
+                    if (ghe == null || ghe.TrangThai == TrangThaiGhe.Hong)
+                        return (false, $"Ghế {seatId} không khả dụng.", null);
+
+                    var isSold = await _context.Ves.AnyAsync(v => v.SuatChieuId == bookingDto.SuatChieuId && v.GheId == seatId && v.TrangThaiVe != TrangThaiVe.Huy);
+                    if (isSold) return (false, $"Ghế {seatId} đã bị người khác mua. Giao dịch thất bại.", null);
+
+                    _seatLockService.UnlockSeat(bookingDto.SuatChieuId, seatId);
 
                     decimal giaVe = 50000; // Base
                     if (ghe.LoaiGhe == LoaiGhe.Vip) giaVe += 20000;
                     if (ghe.LoaiGhe == LoaiGhe.Doi) giaVe += 50000;
 
                     tongTien += giaVe;
-
-                    ghe.TrangThai = TrangThaiGhe.DaBan;
-                    ghe.ThoiGianKhoa = null;
 
                     var ve = new Ve
                     {
@@ -106,7 +105,7 @@ namespace MiniCinema.Services
 
                 foreach (var seatId in bookingDto.SelectedSeatIds)
                 {
-                    await _hubContext.Clients.All.SendAsync("SeatStatusChanged", seatId, "DaBan");
+                    await _hubContext.Clients.Group(bookingDto.SuatChieuId).SendAsync("SeatStatusChanged", seatId, "DaBan");
                 }
 
                 return (true, null, giaoDich);
