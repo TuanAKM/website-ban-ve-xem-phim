@@ -1,25 +1,70 @@
 @model MiniCinema.DTOs.ShowtimeCreateDto
 @{ ViewData["Title"] = "Tạo Suất Chiếu"; }
-<div class="container mt-4">
-    <h2>Tạo Suất Chiếu</h2>
-    <div asp-validation-summary="All" class="text-danger"></div>
-    <form asp-action="Create">
-        <div class="mb-3">
-            <label>Mã Suất Chiếu (LCxx)</label>
-            <input asp-for="MaSuatChieu" class="form-control" />
+
+<div class="container mt-4 mb-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow-sm border-0 rounded-4 overflow-hidden">
+                <div class="bg-success p-4 text-white text-center">
+                    <h3 class="m-0 fw-bold"><i class="bi bi-calendar-plus me-2"></i>TẠO LỊCH CHIẾU MỚI</h3>
+                </div>
+                <div class="card-body p-4 bg-light">
+                    <form asp-action="Create">
+                        <div asp-validation-summary="All" class="text-danger mb-3"></div>
+
+                        <div class="mb-3">
+                            <label class="form-label fw-bold text-muted small">Phim</label>
+                            <select asp-for="PhimId" asp-items="ViewBag.PhimId" class="form-select border-0 shadow-sm rounded-3" id="PhimId"></select>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label fw-bold text-muted small">Phòng chiếu</label>
+                            <select asp-for="PhongChieuId" asp-items="ViewBag.PhongChieuId" class="form-select border-0 shadow-sm rounded-3" id="PhongChieuId"></select>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label fw-bold text-muted small">Giờ Bắt Đầu</label>
+                            <input asp-for="GioBatDau" type="datetime-local" class="form-control border-0 shadow-sm rounded-3" id="GioBatDau" />
+                        </div>
+
+                        <div class="mb-4">
+                            <label class="form-label fw-bold text-muted small">Mã Suất Chiếu (Gợi ý tự động)</label>
+                            <input asp-for="MaSuatChieu" class="form-control border-0 shadow-sm rounded-3 bg-white" id="MaSuatChieu" placeholder="LCXXXX" />
+                        </div>
+
+                        <div class="mt-4 pt-3 border-top">
+                            <button type="submit" class="btn btn-success w-100 btn-lg rounded-pill fw-bold shadow"><i class="bi bi-check-circle"></i> Xác Nhận Tạo Lịch</button>
+                            <a asp-action="Index" class="btn btn-link w-100 text-muted mt-2 text-decoration-none small">Hủy và quay lại danh sách</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
         </div>
-        <div class="mb-3">
-            <label>Phim</label>
-            <select asp-for="PhimId" asp-items="ViewBag.PhimId" class="form-control"></select>
-        </div>
-        <div class="mb-3">
-            <label>Phòng chiếu</label>
-            <select asp-for="PhongChieuId" asp-items="ViewBag.PhongChieuId" class="form-control"></select>
-        </div>
-        <div class="mb-3">
-            <label>Giờ Bắt Đầu</label>
-            <input asp-for="GioBatDau" type="datetime-local" class="form-control" />
-        </div>
-        <button type="submit" class="btn btn-success">Tạo Lịch</button>
-    </form>
+    </div>
 </div>
+
+@section Scripts {
+    @await Html.PartialAsync("_ValidationScriptsPartial")
+    <script>
+        function generateShowCode() {
+            let now = new Date();
+            let dateStr = now.getFullYear().toString().slice(-2) + 
+                          (now.getMonth() + 1).toString().padStart(2, '0') + 
+                          now.getDate().toString().padStart(2, '0');
+            let randomStr = Math.floor(Math.random() * 900 + 100); // 100-999
+            
+            // Format: LC-YYMMDD-XXX
+            document.getElementById('MaSuatChieu').value = "LC-" + dateStr + "-" + randomStr;
+        }
+
+        // Tự động sinh mã khi vừa load trang
+        window.onload = function() {
+            if (!document.getElementById('MaSuatChieu').value) {
+                generateShowCode();
+            }
+        };
+
+        // Cho phép reset mã nếu thay đổi thời gian (tùy chọn)
+        document.getElementById('GioBatDau').addEventListener('change', function() {
+             // Có thể sinh lại mã dựa trên ngày chiếu nếu muốn chuyên nghiệp hơn
+        });
+    </script>
+}

@@ -1,24 +1,83 @@
 @model MiniCinema.Models.Phim
 @{ ViewData["Title"] = "Thêm Phim Mới"; }
-<div class="container mt-4">
-    <h2>Thêm Phim Mới</h2>
-    <form asp-action="Create">
-        <div class="mb-3">
-            <label>Mã Phim</label>
-            <input asp-for="MaPhim" class="form-control" />
+
+<div class="container mt-4 mb-5">
+    <div class="row justify-content-center">
+        <div class="col-md-7">
+            <div class="card shadow-sm border-0 rounded-4 overflow-hidden">
+                <div class="bg-primary p-4 text-white text-center">
+                    <h3 class="m-0 fw-bold"><i class="bi bi-film me-2"></i>THÊM PHIM MỚI</h3>
+                </div>
+                <div class="card-body p-4 bg-light">
+                    <form asp-action="Create">
+                        <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+                        <div class="row">
+                            <div class="col-md-12 mb-3">
+                                <label asp-for="TenPhim" class="form-label fw-bold text-muted small uppercase">Tên Phim</label>
+                                <input asp-for="TenPhim" class="form-control form-control-lg rounded-3 shadow-sm border-0" placeholder="Nhập tên phim..." id="TenPhim" />
+                                <span asp-validation-for="TenPhim" class="text-danger small"></span>
+                            </div>
+
+                            <div class="col-md-12 mb-3">
+                                <label asp-for="MaPhim" class="form-label fw-bold text-muted small">Mã Phim (Gợi ý tự động)</label>
+                                <div class="input-group">
+                                    <span class="input-group-text bg-white border-0"><i class="bi bi-key text-primary"></i></span>
+                                    <input asp-for="MaPhim" class="form-control border-0 shadow-sm" style="background-color: #fff;" id="MaPhim" placeholder="MÃ-PHIM" />
+                                </div>
+                                <span asp-validation-for="MaPhim" class="text-danger small"></span>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="ThoiLuong" class="form-label fw-bold text-muted small">Thời Lượng (Phút)</label>
+                                <input asp-for="ThoiLuong" class="form-control border-0 shadow-sm" type="number" value="120" />
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="TheLoai" class="form-label fw-bold text-muted small">Thể Loại</label>
+                                <input asp-for="TheLoai" class="form-control border-0 shadow-sm" placeholder="Hành động, Hài..." />
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="NhanDoTuoi" class="form-label fw-bold text-muted small">Nhãn Độ Tuổi</label>
+                                <input asp-for="NhanDoTuoi" class="form-control border-0 shadow-sm" placeholder="VD: 18+, T13" />
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="DinhDang" class="form-label fw-bold text-muted small">Định Dạng</label>
+                                <input asp-for="DinhDang" class="form-control border-0 shadow-sm" placeholder="VD: 2D, 3D" value="2D" />
+                            </div>
+                        </div>
+
+                        <div class="mt-4 pt-3 border-top">
+                            <button type="submit" class="btn btn-primary w-100 btn-lg rounded-pill fw-bold shadow"><i class="bi bi-plus-circle"></i> Đăng Ký Phim Mới</button>
+                            <a asp-action="Index" class="btn btn-link w-100 text-muted mt-2 text-decoration-none small">Hủy và quay lại danh sách</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
         </div>
-        <div class="mb-3">
-            <label>Tên Phim</label>
-            <input asp-for="TenPhim" class="form-control" />
-        </div>
-        <div class="mb-3">
-            <label>Thời lượng (phút)</label>
-            <input asp-for="ThoiLuong" class="form-control" type="number" />
-        </div>
-        <div class="mb-3">
-            <label>Thể loại</label>
-            <input asp-for="TheLoai" class="form-control" />
-        </div>
-        <button type="submit" class="btn btn-success">Lưu</button>
-    </form>
+    </div>
 </div>
+
+@section Scripts {
+    @await Html.PartialAsync("_ValidationScriptsPartial")
+    <script>
+        document.getElementById('TenPhim').addEventListener('input', function (e) {
+            let ten = e.target.value;
+            if (ten) {
+                // Tạo slug đơn giản từ tên phim
+                let slug = ten.normalize("NFD").replace(/[\u0300-\u036f]/g, "")
+                    .toUpperCase()
+                    .replace(/Đ/g, "D")
+                    .replace(/[^A-Z0-9\s-]/g, "")
+                    .replace(/\s+/g, "-");
+                document.getElementById('MaPhim').value = slug;
+            } else {
+                document.getElementById('MaPhim').value = "";
+            }
+        });
+    </script>
+}

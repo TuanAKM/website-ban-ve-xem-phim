@@ -9,14 +9,14 @@
                     <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
                     <form asp-action="Create">
                         <div class="mb-3">
-                            <label class="form-label text-muted">Mã Phòng (VD: P01)</label>
-                            <input asp-for="MaPhong" class="form-control rounded-pill px-3" />
-                            <span asp-validation-for="MaPhong" class="text-danger small"></span>
+                            <label class="form-label text-muted">Tên Phòng (VD: Cinema 1)</label>
+                            <input asp-for="TenPhong" class="form-control rounded-pill px-3" id="TenPhong" />
+                            <span asp-validation-for="TenPhong" class="text-danger small"></span>
                         </div>
                         <div class="mb-3">
-                            <label class="form-label text-muted">Tên Phòng (VD: Cinema 1)</label>
-                            <input asp-for="TenPhong" class="form-control rounded-pill px-3" />
-                            <span asp-validation-for="TenPhong" class="text-danger small"></span>
+                            <label class="form-label text-muted">Mã Phòng (Gợi ý: P01, CINEMA1)</label>
+                            <input asp-for="MaPhong" class="form-control rounded-pill px-3" id="MaPhong" />
+                            <span asp-validation-for="MaPhong" class="text-danger small"></span>
                         </div>
                         <div class="mb-3">
                             <label class="form-label text-muted">Loại Phòng (VD: 2D, 3D, IMAX)</label>
@@ -50,4 +50,20 @@
         </div>
     </div>
 </div>
-@section Scripts { @await Html.PartialAsync("_ValidationScriptsPartial") }
+@section Scripts { 
+    @await Html.PartialAsync("_ValidationScriptsPartial") 
+    <script>
+        document.getElementById('TenPhong').addEventListener('input', function (e) {
+            let ten = e.target.value;
+            if (ten) {
+                let code = ten.normalize("NFD").replace(/[\u0300-\u036f]/g, "")
+                    .toUpperCase()
+                    .replace(/Đ/g, "D")
+                    .replace(/[^A-Z0-9]/g, "");
+                
+                // Nếu là "CINEMA1" thì chuyển thành "P1" hoặc giữ nguyên
+                document.getElementById('MaPhong').value = code;
+            }
+        });
+    </script>
+}

@@ -48,13 +48,21 @@
                         if (ghe.LoaiGhe == MiniCinema.Models.LoaiGhe.Doi) priceDetails += 50000;
 
                         <div id="seat-@ghe.MaGhe"
-                             class="seat p-2 text-center text-white cursor-pointer @colorClass rounded shadow-sm"
-                             style="width: 55px; height: 50px; cursor: pointer; display: flex; align-items: center; justify-content: center; user-select: none;"
+                             class="seat p-1 text-center text-white cursor-pointer @colorClass rounded shadow-sm"
+                             style="width: 70px; height: 60px; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; user-select: none; font-size: 0.8rem;"
                              data-id="@ghe.MaGhe"
                              data-status="@status"
                              data-price="@priceDetails"
                              onclick="toggleSeat('@ghe.MaGhe')">
-                            <strong>@ghe.MaGhe</strong>
+                            @if (ghe.LoaiGhe == MiniCinema.Models.LoaiGhe.Vip)
+                            {
+                                <span style="font-size: 0.6rem; font-weight: bold; opacity: 0.8;">VIP</span>
+                            }
+                            else if (ghe.LoaiGhe == MiniCinema.Models.LoaiGhe.Doi)
+                            {
+                                <span style="font-size: 0.6rem; font-weight: bold; opacity: 0.8;">COUPLE</span>
+                            }
+                            <strong style="font-size: 1rem;">@ghe.MaGhe</strong>
                         </div>
                     }
                 }
