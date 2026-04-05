@@ -1,29 +1,83 @@
 @model IEnumerable<MiniCinema.Areas.Admin.Controllers.ReportViewModel>
 @{ ViewData["Title"] = "Báo Cáo Doanh Thu"; }
-<div class="container mt-4">
-    <h2 class="text-primary mb-4">Báo Cáo Doanh Thu Theo Suất Chiếu</h2>
-    <table class="table table-bordered table-striped shadow-sm">
-        <thead class="table-dark">
-            <tr>
-                <th>Phim</th>
-                <th>Giờ Bắt Đầu</th>
-                <th>Tổng Số Vé</th>
-                <th>Tổng Tền</th>
-            </tr>
-        </thead>
-        <tbody>
-            @if (Model != null && Model.Any()) {
-                @foreach(var item in Model) {
+<div class="container mt-4 mb-5">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="text-primary m-0"><i class="bi bi-bar-chart-fill"></i> Báo Cáo Doanh Thu</h2>
+        <div>
+            <button onclick="exportExcel()" class="btn btn-success rounded-pill fw-bold shadow-sm me-2">
+                <i class="bi bi-file-earmark-excel-fill"></i> Xuất Excel
+            </button>
+            <button onclick="exportPDF()" class="btn btn-danger rounded-pill fw-bold shadow-sm">
+                <i class="bi bi-file-earmark-pdf-fill"></i> Xuất PDF
+            </button>
+        </div>
+    </div>
+
+    <div class="card border-0 overflow-hidden">
+        <div id="printArea" class="card-body p-0">
+            <div id="pdfHeader" class="d-none text-center p-4">
+                <h2 class="text-uppercase text-primary fw-bold mb-1">BẢNG BÁO CÁO DOANH THU</h2>
+                <p class="text-muted mb-0">Hệ thống quản lý vé MiniCinema</p>
+            </div>
+            <table id="reportTable" class="table table-bordered table-striped m-0">
+                <thead class="table-dark">
                     <tr>
-                        <td class="fw-bold">@item.TenPhim</td>
-                        <td>@item.GioBatDau.ToString("dd/MM/yyyy HH:mm")</td>
-                        <td class="text-center">@item.TongSoVe</td>
-                        <td class="text-danger fw-bold text-end">@item.TongDoanhThu.ToString("#,##0") đ</td>
+                        <th class="py-3">Phim</th>
+                        <th class="py-3">Giờ Bắt Đầu</th>
+                        <th class="py-3 text-center">Tổng Số Vé</th>
+                        <th class="py-3 text-end">Tổng Tiền</th>
                     </tr>
-                }
-            } else {
-                <tr><td colspan="4" class="text-center text-muted">Chưa có giao dịch nào hoàn thành.</td></tr>
-            }
-        </tbody>
-    </table>
+                </thead>
+                <tbody>
+                    @if (Model != null && Model.Any()) {
+                        @foreach(var item in Model) {
+                            <tr>
+                                <td class="fw-bold align-middle">@item.TenPhim</td>
+                                <td class="align-middle">@item.GioBatDau.ToString("dd/MM/yyyy HH:mm")</td>
+                                <td class="text-center align-middle">@item.TongSoVe</td>
+                                <td class="text-danger fw-bold text-end align-middle">@item.TongDoanhThu.ToString("#,##0") đ</td>
+                            </tr>
+                        }
+                    } else {
+                        <tr><td colspan="4" class="text-center text-muted py-4">Chưa có giao dịch nào phát sinh.</td></tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
 </div>
+
+@section Scripts {
+    <!-- Thư viện SheetJS cho Excel -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <!-- Thư viện html2pdf cho PDF -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+
+    <script>
+        function exportExcel() {
+            var table = document.getElementById("reportTable");
+            // Tạo workbook từ bảng html
+            var wb = XLSX.utils.table_to_book(table, {sheet: "Doanh Thu"});
+            // Cài ngày xuất vào tên file
+            let date = new Date().toISOString().slice(0, 10);
+            XLSX.writeFile(wb, "BaoCaoDoanhThu_" + date + ".xlsx");
+        }
+
+        function exportPDF() {
+            var element = document.getElementById("printArea");
+            document.getElementById("pdfHeader").classList.remove("d-none"); // Hiện title trên PDF
+
+            var opt = {
+              margin:       0.5,
+              filename:     'BaoCaoDoanhThu_' + new Date().toISOString().slice(0, 10) + '.pdf',
+              image:        { type: 'jpeg', quality: 0.98 },
+              html2canvas:  { scale: 2 },
+              jsPDF:        { unit: 'in', format: 'letter', orientation: 'portrait' }
+            };
+
+            html2pdf().set(opt).from(element).save().then(() => {
+                document.getElementById("pdfHeader").classList.add("d-none"); // Ẩn lại title trên web
+            });
+        }
+    </script>
+}
