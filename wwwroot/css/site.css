@@ -1,31 +1,127 @@
-html {
-  font-size: 14px;
+/* ===== VIDEO BACKGROUND ===== */
+#bg-video {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    z-index: -2;
 }
 
-@media (min-width: 768px) {
-  html {
-    font-size: 16px;
-  }
+/* ===== OVERLAY + BLUR ===== */
+body::before {
+    content: "";
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.4);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+    z-index: -1;
 }
 
-.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
-  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
-}
-
-html {
-  position: relative;
-  min-height: 100%;
-}
-
+/* ===== BODY ===== */
 body {
-  margin-bottom: 60px;
+    font-family: 'Segoe UI', sans-serif;
+    color: #ffffff;
 }
 
-.form-floating > .form-control-plaintext::placeholder, .form-floating > .form-control::placeholder {
-  color: var(--bs-secondary-color);
-  text-align: end;
+/* ===== NAVBAR ===== */
+.navbar {
+    background-color: black !important; 
 }
 
-.form-floating > .form-control-plaintext:focus::placeholder, .form-floating > .form-control:focus::placeholder {
-  text-align: start;
+.nav-link {
+    color: #ffffff !important;
+}
+
+    .nav-link:hover {
+        color: #00ffcc !important;
+    }
+
+/* ===== DROPDOWN ===== */
+.dropdown-menu {
+    background: rgba(0,0,0,0.8) !important;
+    backdrop-filter: blur(10px);
+    border-radius: 15px !important;
+}
+
+.dropdown-item {
+    color: #ffffff !important;
+}
+
+    .dropdown-item:hover {
+        background: rgba(0,255,204,0.2) !important;
+        color: #00ffcc !important;
+    }
+
+/* ===== CARD ===== */
+.card {
+    background: rgba(255, 255, 255, 0.85) !important;
+    border-radius: 20px !important;
+    backdrop-filter: blur(10px);
+    color: #000 !important;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+}
+
+/* ===== FORM ===== */
+.form-label {
+    color: #000 !important;
+    font-weight: 600;
+}
+
+.form-control {
+    background: #ffffff !important;
+    color: #000 !important;
+    border-radius: 30px !important;
+    border: 1px solid #ccc !important;
+}
+
+/* ===== 🔥 BUTTON FIX ===== */
+.btn {
+    border-radius: 30px !important;
+    font-weight: 600;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+    transition: all 0.2s ease;
+}
+
+/* PRIMARY */
+.btn-primary {
+    background: linear-gradient(135deg, #00c6ff, #0072ff) !important;
+    border: none !important;
+    color: #fff !important;
+}
+
+    .btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+    }
+
+/* SUCCESS */
+.btn-success {
+    background: linear-gradient(135deg, #00cc99, #00ffcc) !important;
+    border: none !important;
+    color: #000 !important;
+}
+
+    .btn-success:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+    }
+
+/* ===== ANIMATION ===== */
+.fade-page {
+    opacity: 0;
+    transform: translateY(10px);
+    animation: fadeIn 0.4s ease forwards;
+}
+
+@keyframes fadeIn {
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }

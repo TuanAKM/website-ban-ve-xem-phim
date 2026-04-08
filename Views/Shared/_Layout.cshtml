@@ -4,86 +4,104 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - MiniCinema</title>
-    <script type="importmap"></script>
+
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/MiniCinema.styles.css" asp-append-version="true" />
 </head>
+
 <body>
+    <!-- VIDEO BACKGROUND -->
+    <video autoplay muted loop id="bg-video">
+        <source src="/videos/bg.mp4" type="video/mp4">
+    </video>
+
     <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
+        <nav class="navbar navbar-expand-sm navbar-dark bg-transparent border-bottom mb-3">
             <div class="container-fluid">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">MiniCinema</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                        aria-expanded="false" aria-label="Toggle navigation">
+                <a class="navbar-brand" asp-controller="Home" asp-action="Index">MiniCinema</a>
+
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse">
                     <span class="navbar-toggler-icon"></span>
                 </button>
+
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
+                    
+                    <!-- MENU TRÁI -->
                     <ul class="navbar-nav flex-grow-1">
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Trang Chủ</a>
+                            <a class="nav-link" asp-controller="Home" asp-action="Index">Trang Chủ</a>
                         </li>
+
                         @if(!User.IsInRole("Admin")) 
                         {
                             <li class="nav-item">
-                                <a class="nav-link fw-bold text-primary" asp-area="" asp-controller="Booking" asp-action="Index">ĐẶT VÉ</a>
+                                <a class="nav-link fw-bold text-info" asp-controller="Booking" asp-action="Index">ĐẶT VÉ</a>
                             </li>
                         }
+
+                        <!-- 🔥 KHÔI PHỤC MENU QUẢN TRỊ -->
                         @if (User.IsInRole("Admin") || User.IsInRole("Staff"))
                         {
-                        <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle text-dark" href="#" role="button" data-bs-toggle="dropdown">Quản Trị Hệ Thống</a>
-                            <ul class="dropdown-menu">
-                                @if(User.IsInRole("Admin"))
-                                {
-                                    <li><h6 class="dropdown-header">Cấu Hình Chung</h6></li>
-                                    <li><a class="dropdown-item" asp-area="Admin" asp-controller="Movie" asp-action="Index">🎞️ Quản Lý Phim</a></li>
-                                    <li><a class="dropdown-item" asp-area="Admin" asp-controller="Room" asp-action="Index">💺 Cấu Hình Phòng</a></li>
-                                    <li><hr class="dropdown-divider"></li>
-                                }
-                                
-                                @if(User.IsInRole("Admin")) {
-                                    <li><h6 class="dropdown-header">Lịch Chiếu</h6></li>
-                                    <li><a class="dropdown-item" asp-area="Admin" asp-controller="Showtime" asp-action="Index">🕒 Thiết Lập Suất Chiếu</a></li>
-                                    <li><hr class="dropdown-divider"></li>
-                                }
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown">
+                                    Quản Trị Hệ Thống
+                                </a>
 
-                                @if(User.IsInRole("Staff"))
-                                {
-                                    <li><h6 class="dropdown-header">Nhân Viên & Soát Vé</h6></li>
-                                    <li><a class="dropdown-item" asp-area="Admin" asp-controller="Ticket" asp-action="Index">🎫 Tra Cứu & Check-in Vé</a></li>
-                                }
-                                
-                                @if(User.IsInRole("Admin"))
-                                {
-                                    <li><hr class="dropdown-divider"></li>
-                                    <li><h6 class="dropdown-header">Kế Toán</h6></li>
-                                    <li><a class="dropdown-item text-danger fw-bold" asp-area="Admin" asp-controller="Report" asp-action="Index">💰 Báo Cáo Doanh Thu</a></li>
-                                    
-                                    <li><hr class="dropdown-divider"></li>
-                                    <li><h6 class="dropdown-header">Dữ Liệu Hệ Thống</h6></li>
-                                    <li><a class="dropdown-item" asp-area="Admin" asp-controller="User" asp-action="Index">👥 Quản Lý Tài Khoản</a></li>
-                                }
-                            </ul>
-                        </li>
+                                <ul class="dropdown-menu">
+                                    @if(User.IsInRole("Admin"))
+                                    {
+                                        <li><h6 class="dropdown-header">Cấu Hình Chung</h6></li>
+                                        <li><a class="dropdown-item" asp-area="Admin" asp-controller="Movie" asp-action="Index">🎞️ Quản Lý Phim</a></li>
+                                        <li><a class="dropdown-item" asp-area="Admin" asp-controller="Room" asp-action="Index">💺 Cấu Hình Phòng</a></li>
+                                        <li><hr class="dropdown-divider"></li>
+                                    }
+
+                                    @if(User.IsInRole("Admin"))
+                                    {
+                                        <li><h6 class="dropdown-header">Lịch Chiếu</h6></li>
+                                        <li><a class="dropdown-item" asp-area="Admin" asp-controller="Showtime" asp-action="Index">🕒 Thiết Lập Suất Chiếu</a></li>
+                                        <li><hr class="dropdown-divider"></li>
+                                    }
+
+                                    @if(User.IsInRole("Staff"))
+                                    {
+                                        <li><h6 class="dropdown-header">Nhân Viên & Soát Vé</h6></li>
+                                        <li><a class="dropdown-item" asp-area="Admin" asp-controller="Ticket" asp-action="Index">🎫 Tra Cứu & Check-in Vé</a></li>
+                                    }
+
+                                    @if(User.IsInRole("Admin"))
+                                    {
+                                        <li><hr class="dropdown-divider"></li>
+                                        <li><h6 class="dropdown-header">Kế Toán</h6></li>
+                                        <li><a class="dropdown-item text-danger fw-bold" asp-area="Admin" asp-controller="Report" asp-action="Index">💰 Báo Cáo Doanh Thu</a></li>
+
+                                        <li><hr class="dropdown-divider"></li>
+                                        <li><h6 class="dropdown-header">Dữ Liệu Hệ Thống</h6></li>
+                                        <li><a class="dropdown-item" asp-area="Admin" asp-controller="User" asp-action="Index">👥 Quản Lý Tài Khoản</a></li>
+                                    }
+                                </ul>
+                            </li>
                         }
                     </ul>
+
+                    <!-- MENU PHẢI -->
                     <ul class="navbar-nav">
                         @if (User.Identity != null && User.Identity.IsAuthenticated)
                         {
                             <li class="nav-item dropdown">
-                                <a class="nav-link dropdown-toggle text-success fw-bold" href="#" role="button" data-bs-toggle="dropdown">
-                                    <i class="bi bi-person-circle"></i> Xin chào, @User.Identity.Name!
+                                <a class="nav-link dropdown-toggle text-success" data-bs-toggle="dropdown">
+                                    Xin chào, @User.Identity.Name
                                 </a>
-                                <ul class="dropdown-menu dropdown-menu-end shadow-sm">
+                                <ul class="dropdown-menu dropdown-menu-end">
                                     @if(!User.IsInRole("Admin"))
                                     {
-                                        <li><a class="dropdown-item" asp-area="" asp-controller="Booking" asp-action="History"><i class="bi bi-ticket-perforated"></i> Lịch sử Mua Vé</a></li>
+                                        <li><a class="dropdown-item" asp-controller="Booking" asp-action="History">Lịch sử mua vé</a></li>
                                         <li><hr class="dropdown-divider"></li>
                                     }
+
                                     <li>
-                                        <form class="form-inline w-100" asp-area="" asp-controller="Account" asp-action="Logout" method="post">
-                                            <button type="submit" class="dropdown-item text-danger w-100 text-start"><i class="bi bi-box-arrow-right"></i> Đăng xuất</button>
+                                        <form asp-controller="Account" asp-action="Logout" method="post">
+                                            <button type="submit" class="dropdown-item text-danger">Đăng xuất</button>
                                         </form>
                                     </li>
                                 </ul>
@@ -92,31 +110,28 @@
                         else
                         {
                             <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Account" asp-action="Register">Đăng Ký</a>
+                                <a class="nav-link" asp-controller="Account" asp-action="Register">Đăng Ký</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link text-primary fw-bold" asp-area="" asp-controller="Account" asp-action="Login">Đăng Nhập</a>
+                                <a class="nav-link text-info fw-bold" asp-controller="Account" asp-action="Login">Đăng Nhập</a>
                             </li>
                         }
                     </ul>
+
                 </div>
             </div>
         </nav>
     </header>
+
     <div class="container">
-        <main role="main" class="pb-3">
+        <main class="pb-3 fade-page">
             @RenderBody()
         </main>
     </div>
 
-    <footer class="border-top footer text-muted">
-        <div class="container">
-            &copy; 2026 - MiniCinema - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-        </div>
-    </footer>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="~/js/site.js" asp-append-version="true"></script>
+
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

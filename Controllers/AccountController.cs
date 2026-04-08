@@ -41,13 +41,6 @@ namespace MiniCinema.Controllers
                     }
                     return RedirectToAction("Index", "Home");
                 }
-                
-                if (result.IsLockedOut)
-                {
-                    ModelState.AddModelError(string.Empty, "TÀI KHOẢN CỦA BẠN ĐÃ BỊ KHÓA! Vui lòng liên hệ Admin để được hỗ trợ.");
-                    return View(model);
-                }
-
                 ModelState.AddModelError(string.Empty, "Tên đăng nhập hoặc mật khẩu không chính xác.");
             }
             return View(model);

@@ -71,7 +71,7 @@
             <div class="d-flex justify-content-center gap-4 mt-5">
                 <div class="d-flex align-items-center gap-2"><div class="rounded bg-secondary" style="width: 20px; height: 20px;"></div> Trống</div>
                 <div class="d-flex align-items-center gap-2"><div class="rounded bg-warning" style="width: 20px; height: 20px;"></div> Đang chọn (Người khác)</div>
-                <div class="d-flex align-items-center gap-2"><div class="rounded bg-success" style="width: 20px; height: 20px;"></div> Của bạn</div>
+                <div class="d-flex align-items-center gap-2"><div class="rounded bg-success" style="width: 20px; height: 20px;"></div> Đã đặt ghế</div>
                 <div class="d-flex align-items-center gap-2"><div class="rounded bg-danger" style="width: 20px; height: 20px;"></div> Đã bán</div>
                 <div class="d-flex align-items-center gap-2"><div class="rounded bg-dark" style="width: 20px; height: 20px;"></div> Hỏng</div>
             </div>
@@ -95,7 +95,7 @@
                     <input type="hidden" name="SuatChieuId" value="@Model.MaSuatChieu" />
                     <!-- SelectedSeatIds inputs will be injected dynamically via JS -->
                     
-                    <button type="submit" class="btn btn-primary w-100 mt-4 py-2 fs-5 fw-bold rounded-3" id="btnPay" disabled>THANH TOÁN</button>
+                    <button type="submit" class="btn btn-primary w-100 mt-4 py-2 fs-5 fw-bold rounded-3" id="btnPay" disabled>XÁC NHẬN ĐẶT CHỖ</button>
                 </form>
             </div>
         </div>
@@ -116,13 +116,7 @@
             seatEl.classList.remove("bg-secondary", "bg-warning", "bg-danger", "bg-dark", "bg-success");
             
             if (newStatus === "Trong") seatEl.classList.add("bg-secondary");
-            if (newStatus === "DangChon") {
-                if (selectedSeats.includes(seatId)) {
-                    seatEl.classList.add("bg-success");
-                } else {
-                    seatEl.classList.add("bg-warning");
-                }
-            }
+            if (newStatus === "DangChon") seatEl.classList.add("bg-warning");
             if (newStatus === "DaBan") seatEl.classList.add("bg-danger");
             if (newStatus === "Hong") seatEl.classList.add("bg-dark");
 
@@ -157,16 +151,13 @@
             const status = el.dataset.status;
 
             if (status === "DaBan" || status === "Hong") {
-                alert("Ghế này không khả dụng!");
+                alert("Ghế nảy không khả dụng!");
                 return;
             }
 
             const isSelected = selectedSeats.includes(seatId);
 
             if (isSelected) {
-                // Eagerly remove to prevent SignalR conflict
-                selectedSeats = selectedSeats.filter(s => s !== seatId);
-                
                 // Unlock
                 const req = await fetch('/Booking/UnlockSeat', {
                     method: 'POST',
@@ -175,20 +166,16 @@
                 });
                 const res = await req.json();
                 if (res.success) {
-                    el.classList.remove("bg-success", "bg-warning", "bg-danger", "bg-dark");
+                    selectedSeats = selectedSeats.filter(s => s !== seatId);
+                    el.classList.remove("bg-success", "bg-warning");
                     el.classList.add("bg-secondary");
                     el.dataset.status = "Trong";
-                } else {
-                    selectedSeats.push(seatId); // Rollback
                 }
             } else {
-                if (status === "DangChon" && !selectedSeats.includes(seatId)) {
+                if (status === "DangChon") {
                     alert("Ghế đang được người khác chọn. Vui lòng chọn ghế khác.");
                     return;
                 }
-
-                // Eagerly push to prevent SignalR from thinking it's someone else's
-                selectedSeats.push(seatId);
 
                 // Lock
                 const req = await fetch('/Booking/LockSeat', {
@@ -198,11 +185,11 @@
                 });
                 const res = await req.json();
                 if (res.success) {
-                    el.classList.remove("bg-secondary", "bg-warning", "bg-danger", "bg-dark");
+                    selectedSeats.push(seatId);
+                    el.classList.remove("bg-secondary");
                     el.classList.add("bg-success");
                     el.dataset.status = "DangChon";
                 } else {
-                    selectedSeats = selectedSeats.filter(s => s !== seatId); // Rollback
                     alert("Không thể chọn ghế này! Ghế có thể đã bị người khác chọn trước bạn 1 bước.");
                 }
             }

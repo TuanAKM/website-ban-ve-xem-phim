@@ -269,9 +269,6 @@ namespace MiniCinema.Data.Migrations
                     b.Property<decimal>("TongTien")
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<bool>("TrangThai")
-                        .HasColumnType("bit");
-
                     b.Property<string>("UserId")
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");

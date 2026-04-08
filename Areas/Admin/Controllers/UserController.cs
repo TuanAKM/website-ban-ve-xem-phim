@@ -37,8 +37,7 @@ namespace MiniCinema.Areas.Admin.Controllers
                     Email = user.Email ?? "N/A",
                     HoTen = user.HoTen ?? "N/A",
                     PhoneNumber = user.PhoneNumber ?? "N/A",
-                    Roles = roles,
-                    IsLockedOut = user.LockoutEnd.HasValue && user.LockoutEnd.Value > System.DateTimeOffset.UtcNow
+                    Roles = roles
                 });
             }
             return View(model);
@@ -148,58 +147,14 @@ namespace MiniCinema.Areas.Admin.Controllers
                 return RedirectToAction(nameof(Index));
             }
 
-            try
+            var result = await _userManager.DeleteAsync(user);
+            if (!result.Succeeded)
             {
-                var result = await _userManager.DeleteAsync(user);
-                if (!result.Succeeded)
-                {
-                    TempData["Error"] = "Lỗi khi xóa tài khoản: " + string.Join(", ", result.Errors.Select(e => e.Description));
-                }
-                else
-                {
-                    TempData["Success"] = "Đã xóa tài khoản " + user.UserName;
-                }
-            }
-            catch (DbUpdateException)
-            {
-                TempData["Error"] = "Bảo vệ hệ thống: Khách hàng này đã mua vé! Vui lòng dùng tính năng [Khóa Tài Khoản] thay vì xóa để bảo toàn báo cáo doanh thu.";
-            }
-
-            return RedirectToAction(nameof(Index));
-        }
-
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> ToggleLock(string id)
-        {
-            var user = await _userManager.FindByIdAsync(id);
-            if (user == null) return NotFound("Không tìm thấy người dùng.");
-
-            var currentUser = await _userManager.GetUserAsync(User);
-            if (currentUser != null && currentUser.Id == user.Id)
-            {
-                TempData["Error"] = "Bạn không thể tự khóa tài khoản của chính mình!";
-                return RedirectToAction(nameof(Index));
-            }
-
-            var roles = await _userManager.GetRolesAsync(user);
-            if (roles.Contains("Admin"))
-            {
-                TempData["Error"] = "Cấm khóa tài khoản đồng cấp Admin!";
-                return RedirectToAction(nameof(Index));
-            }
-
-            bool isCurrentlyLocked = user.LockoutEnd.HasValue && user.LockoutEnd.Value > System.DateTimeOffset.UtcNow;
-            
-            if (isCurrentlyLocked)
-            {
-                await _userManager.SetLockoutEndDateAsync(user, null);
-                TempData["Success"] = $"Đã MỞ KHÓA tài khoản {user.UserName}.";
+                TempData["Error"] = "Lỗi khi xóa tài khoản: " + string.Join(", ", result.Errors.Select(e => e.Description));
             }
             else
             {
-                await _userManager.SetLockoutEndDateAsync(user, System.DateTimeOffset.MaxValue);
-                TempData["Success"] = $"Đã KHÓA tài khoản {user.UserName} vĩnh viễn.";
+                TempData["Success"] = "Đã xóa tài khoản " + user.UserName;
             }
 
             return RedirectToAction(nameof(Index));

@@ -11,7 +11,6 @@ namespace MiniCinema.DTOs
         public string HoTen { get; set; } = null!;
         public string PhoneNumber { get; set; } = null!;
         public IList<string> Roles { get; set; } = new List<string>();
-        public bool IsLockedOut { get; set; }
     }
 
     public class UserCreateDto

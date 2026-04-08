@@ -158,47 +158,5 @@ namespace MiniCinema.Areas.Admin.Controllers
             }
             return RedirectToAction(nameof(Index));
         }
-
-        public async Task<IActionResult> ManageSeats(string id)
-        {
-            if (string.IsNullOrEmpty(id)) return NotFound();
-            
-            var room = await _context.PhongChieus
-                .Include(p => p.Ghes)
-                .FirstOrDefaultAsync(p => p.MaPhong == id);
-                
-            if (room == null) return NotFound();
-            
-            // Sắp xếp ghế theo alpha-beta để hiển thị cho đẹp
-            room.Ghes = room.Ghes.OrderBy(g => g.MaGhe).ToList();
-            
-            return View(room);
-        }
-
-        [HttpPost]
-        public async Task<IActionResult> UpdateSeat([FromBody] UpdateSeatRequest req)
-        {
-            var ghe = await _context.Ghes.FindAsync(req.MaGhe);
-            if (ghe == null) return Json(new { success = false, message = "Không tìm thấy ghế." });
-
-            // Cập nhật loại ghế và trạng thái
-            ghe.LoaiGhe = req.LoaiGhe;
-            ghe.TrangThai = req.TrangThaiGhe;
-            
-            await _context.SaveChangesAsync();
-            return Json(new { 
-                success = true, 
-                maGhe = ghe.MaGhe,
-                loaiGhe = ghe.LoaiGhe.ToString(),
-                trangThai = ghe.TrangThai.ToString()
-            });
-        }
-    }
-
-    public class UpdateSeatRequest
-    {
-        public string MaGhe { get; set; } = null!;
-        public LoaiGhe LoaiGhe { get; set; }
-        public TrangThaiGhe TrangThaiGhe { get; set; }
     }
 }

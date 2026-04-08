@@ -93,9 +93,8 @@ namespace MiniCinema.Services
                     MaGiaoDich = maGd,
                     NgayGiaoDich = DateTime.Now,
                     TongTien = tongTien,
-                    PhuongThucTT = "Offline",
-                    UserId = bookingDto.UserId,
-                    TrangThai = true
+                    PhuongThucTT = "Online",
+                    UserId = bookingDto.UserId
                 };
 
                 await _context.GiaoDichs.AddAsync(giaoDich);

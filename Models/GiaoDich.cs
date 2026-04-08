@@ -12,8 +12,6 @@ namespace MiniCinema.Models
         public DateTime NgayGiaoDich { get; set; }
         public decimal TongTien { get; set; }
         public string? PhuongThucTT { get; set; }
-        public bool TrangThai { get; set; }
-
         
         [Required]
         public string UserId { get; set; } = null!;

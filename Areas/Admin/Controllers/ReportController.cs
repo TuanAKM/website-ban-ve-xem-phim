@@ -23,7 +23,7 @@ namespace MiniCinema.Areas.Admin.Controllers
             var reportData = await _context.Ves
                 .Include(v => v.SuatChieu)
                     .ThenInclude(s => s.Phim)
-                .Where(v => v.TrangThaiVe == Models.TrangThaiVe.DaBan || v.TrangThaiVe == Models.TrangThaiVe.DaCheckIn)
+                .Where(v => v.TrangThaiVe == Models.TrangThaiVe.DaBan)
                 .GroupBy(v => new { v.SuatChieuId, v.SuatChieu.Phim.TenPhim, v.SuatChieu.GioBatDau })
                 .Select(g => new ReportViewModel
                 {

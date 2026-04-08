@@ -25,12 +25,7 @@
         <tbody>
             @foreach(var item in Model) {
                 <tr>
-                    <td class="fw-bold">
-                        @item.Username
-                        @if(item.IsLockedOut) {
-                            <br/><span class="badge bg-dark mt-1"><i class="bi bi-lock-fill"></i> Bị Khóa</span>
-                        }
-                    </td>
+                    <td class="fw-bold">@item.Username</td>
                     <td>@item.HoTen</td>
                     <td>
                         @foreach(var r in item.Roles) {
@@ -45,12 +40,7 @@
                             <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-warning"><i class="bi bi-pencil-square"></i> Sửa</a>
                             
                             @if(!item.Roles.Contains("Admin")) {
-                                <form asp-action="ToggleLock" asp-route-id="@item.Id" method="post" class="d-inline border-start border-white border-2">
-                                    <button type="submit" class="btn btn-sm @(item.IsLockedOut ? "btn-success" : "btn-dark") rounded-0" title="@(item.IsLockedOut ? "Mở Khóa Tài Khoản" : "Khóa Tài Khoản")">
-                                        <i class="bi @(item.IsLockedOut ? "bi-unlock-fill" : "bi-shield-lock-fill")"></i> @(item.IsLockedOut ? "Mở Khóa" : "Khóa")
-                                    </button>
-                                </form>
-                                <form asp-action="Delete" asp-route-id="@item.Id" method="post" onsubmit="return confirm('Bạn có CHẮC CHẮN muốn xóa user @item.Username?\n\nLưu ý: Nếu user này từng thanh toán thành công, hệ thống sẽ BÁO LỖI để bảo vệ sự toàn vẹn của báo cáo Thu Ngân.\n\n-> Hãy sử dụng tính năng [Khóa] ở bên cạnh thay vì Xóa nhé!');" class="d-inline border-start border-white border-2">
+                                <form asp-action="Delete" asp-route-id="@item.Id" method="post" onsubmit="return confirm('Bạn có CHẮC CHẮN muốn xóa user @item.Username?');" class="d-inline">
                                     <button type="submit" class="btn btn-sm btn-danger rounded-end"><i class="bi bi-trash"></i> Xóa</button>
                                 </form>
                             } else {
