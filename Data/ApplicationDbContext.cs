@@ -17,6 +17,7 @@ namespace MiniCinema.Data
         public DbSet<SuatChieu> SuatChieus { get; set; }
         public DbSet<GiaoDich> GiaoDichs { get; set; }
         public DbSet<Ve> Ves { get; set; }
+        public DbSet<BaoCaoThongKe> BaoCaoThongKes { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {

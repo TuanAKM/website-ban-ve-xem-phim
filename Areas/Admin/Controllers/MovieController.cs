@@ -30,6 +30,12 @@ namespace MiniCinema.Areas.Admin.Controllers
         {
             if (ModelState.IsValid)
             {
+                if (await _context.Phims.AnyAsync(m => m.MaPhim == phim.MaPhim))
+                {
+                    ModelState.AddModelError("MaPhim", "Mã phim này đã bị trùng. Vui lòng nhập mã khác!");
+                    return View(phim);
+                }
+
                 _context.Add(phim);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));

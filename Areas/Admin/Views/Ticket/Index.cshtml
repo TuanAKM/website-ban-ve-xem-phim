@@ -15,7 +15,7 @@
                         </div>
                     }
 
-                    <form asp-action="Scan" method="post" class="mt-4">
+                    <form id="checkInForm" asp-action="Scan" method="post" class="mt-4">
                         <div class="input-group input-group-lg mb-3">
                             <input type="text" name="maVe" class="form-control fw-bold fs-4 text-center" 
                                    placeholder="Nhập mã vé hoặc quét QR code" 
@@ -37,3 +37,44 @@
         </div>
     </div>
 </div>
+
+@section Scripts {
+    <script>
+        document.getElementById("checkInForm").addEventListener("submit", async function(e) {
+            e.preventDefault(); // Tạm dừng submit
+            
+            const form = this;
+            const btn = form.querySelector('button[type="submit"]');
+            const maVe = form.querySelector('input[name="maVe"]').value.trim();
+            
+            if (!maVe) {
+                form.submit();
+                return;
+            }
+
+            btn.disabled = true;
+            btn.innerHTML = `<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Đang kiểm tra...`;
+
+            try {
+                // Gọi API kiểm tra độ tuổi
+                const res = await fetch(`/Admin/Ticket/CheckAgeInfo?maVe=${encodeURIComponent(maVe)}`);
+                const data = await res.json();
+
+                if (data.hasAgeRating) {
+                    const confirmed = confirm(`⚠️ CẢNH BÁO: Phim này được dán nhãn [${data.rating}].\n\nYêu cầu NHÂN VIÊN kiểm tra CCCD/CMND của khách hàng để đảm bảo độ tuổi.\n\nNhấn [OK] nếu khách hàng đã đủ tuổi và bạn cho phép vào rạp.`);
+                    if (!confirmed) {
+                        btn.disabled = false;
+                        btn.innerHTML = "XÁC NHẬN";
+                        return; // Hủy check-in
+                    }
+                }
+                
+                // Trực tiếp submit form khi đã qua vòng kiểm tra
+                form.submit();
+            } catch (err) {
+                console.error(err);
+                form.submit(); // Lỗi mạng thì cứ cho submit để server tự lo
+            }
+        });
+    </script>
+}
