@@ -116,7 +116,13 @@
             seatEl.classList.remove("bg-secondary", "bg-warning", "bg-danger", "bg-dark", "bg-success");
             
             if (newStatus === "Trong") seatEl.classList.add("bg-secondary");
-            if (newStatus === "DangChon") seatEl.classList.add("bg-warning");
+            if (newStatus === "DangChon") {
+                if (selectedSeats.includes(seatId)) {
+                    seatEl.classList.add("bg-success");
+                } else {
+                    seatEl.classList.add("bg-warning");
+                }
+            }
             if (newStatus === "DaBan") seatEl.classList.add("bg-danger");
             if (newStatus === "Hong") seatEl.classList.add("bg-dark");
 
@@ -151,13 +157,16 @@
             const status = el.dataset.status;
 
             if (status === "DaBan" || status === "Hong") {
-                alert("Ghế nảy không khả dụng!");
+                alert("Ghế này không khả dụng!");
                 return;
             }
 
             const isSelected = selectedSeats.includes(seatId);
 
             if (isSelected) {
+                // Eagerly remove to prevent SignalR conflict
+                selectedSeats = selectedSeats.filter(s => s !== seatId);
+                
                 // Unlock
                 const req = await fetch('/Booking/UnlockSeat', {
                     method: 'POST',
@@ -166,16 +175,20 @@
                 });
                 const res = await req.json();
                 if (res.success) {
-                    selectedSeats = selectedSeats.filter(s => s !== seatId);
-                    el.classList.remove("bg-success", "bg-warning");
+                    el.classList.remove("bg-success", "bg-warning", "bg-danger", "bg-dark");
                     el.classList.add("bg-secondary");
                     el.dataset.status = "Trong";
+                } else {
+                    selectedSeats.push(seatId); // Rollback
                 }
             } else {
-                if (status === "DangChon") {
+                if (status === "DangChon" && !selectedSeats.includes(seatId)) {
                     alert("Ghế đang được người khác chọn. Vui lòng chọn ghế khác.");
                     return;
                 }
+
+                // Eagerly push to prevent SignalR from thinking it's someone else's
+                selectedSeats.push(seatId);
 
                 // Lock
                 const req = await fetch('/Booking/LockSeat', {
@@ -185,12 +198,12 @@
                 });
                 const res = await req.json();
                 if (res.success) {
-                    selectedSeats.push(seatId);
-                    el.classList.remove("bg-secondary");
+                    el.classList.remove("bg-secondary", "bg-warning", "bg-danger", "bg-dark");
                     el.classList.add("bg-success");
                     el.dataset.status = "DangChon";
                 } else {
-                    alert("Không thể chọn ghế này! Ghế có thể đã bị người khác chọn trước bạn 1 bước.");
+                    selectedSeats = selectedSeats.filter(s => s !== seatId); // Rollback
+                    alert("Không thể chọn ghế này! Ghế có thể đã bị người khác chọn trước.");
                 }
             }
             updatePanel();

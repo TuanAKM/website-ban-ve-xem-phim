@@ -1,29 +1,139 @@
 @model IEnumerable<MiniCinema.Areas.Admin.Controllers.ReportViewModel>
 @{ ViewData["Title"] = "Báo Cáo Doanh Thu"; }
-<div class="container mt-4">
-    <h2 class="text-primary mb-4">Báo Cáo Doanh Thu Theo Suất Chiếu</h2>
-    <table class="table table-bordered table-striped shadow-sm">
-        <thead class="table-dark">
+<div class="container mt-4 mb-5">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="text-primary m-0"><i class="bi bi-bar-chart-fill"></i> Báo Cáo Doanh Thu theo suất chiếu</h2>
+        <div>
+            <button onclick="exportExcel()" class="btn btn-success rounded-pill fw-bold shadow-sm me-2">
+                <i class="bi bi-file-earmark-excel-fill"></i> Xuất Excel
+            </button>
+            <button onclick="exportPDF()" class="btn btn-danger rounded-pill fw-bold shadow-sm">
+                <i class="bi bi-file-earmark-pdf-fill"></i> Xuất PDF
+            </button>
+        </div>
+    </div>
+
+    @if(TempData["Error"] != null) {
+        <div class="alert alert-danger fw-bold"><i class="bi bi-shield-x"></i> @TempData["Error"]</div>
+    }
+    @if(TempData["Success"] != null) {
+        <div class="alert alert-success fw-bold"><i class="bi bi-check-circle"></i> @TempData["Success"]</div>
+    }
+
+    <div class="card p-3 mb-4 shadow-sm border-0" style="background:#fff3cd;">
+        <form asp-action="TongHopDuLieu" method="post" class="d-flex align-items-center flex-wrap gap-3 m-0">
+            <h5 class="m-0 me-2 text-warning-emphasis"><i class="bi bi-safe-fill"></i> Chốt Sổ Định Kỳ</h5>
+            <div class="input-group" style="max-width: 250px;">
+                <span class="input-group-text bg-white">Từ</span>
+                <input type="date" name="startDate" class="form-control" required value="@DateTime.Now.ToString("yyyy-MM-01")" />
+            </div>
+            <div class="input-group" style="max-width: 250px;">
+                <span class="input-group-text bg-white">Đến</span>
+                <input type="date" name="endDate" class="form-control" required value="@DateTime.Now.ToString("yyyy-MM-dd")" />
+            </div>
+            <button type="submit" class="btn btn-warning fw-bold px-4"><i class="bi bi-save2"></i> Tổng Hợp Lịch Sử & Lưu</button>
+        </form>
+    </div>
+
+    <div class="card border-0 overflow-hidden shadow-sm mb-5">
+        <div id="printArea" class="card-body p-0">
+            <div id="pdfHeader" class="d-none text-center p-4">
+                <h2 class="text-uppercase text-primary fw-bold mb-1">BẢNG BÁO CÁO DOANH THU</h2>
+                <p class="text-muted mb-0">Hệ thống quản lý vé MiniCinema</p>
+            </div>
+            <table id="reportTable" class="table table-bordered table-striped m-0">
+                <thead class="table-dark">
+                    <tr>
+                        <th class="py-3">Phim</th>
+                        <th class="py-3">Giờ Bắt Đầu</th>
+                        <th class="py-3 text-center">Tổng Số Vé</th>
+                        <th class="py-3 text-end">Tổng Tiền</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (Model != null && Model.Any()) {
+                        @foreach(var item in Model) {
+                            <tr>
+                                <td class="fw-bold align-middle">@item.TenPhim</td>
+                                <td class="align-middle">@item.GioBatDau.ToString("dd/MM/yyyy HH:mm")</td>
+                                <td class="text-center align-middle">@item.TongSoVe</td>
+                                <td class="text-danger fw-bold text-end align-middle">@item.TongDoanhThu.ToString("#,##0") đ</td>
+                            </tr>
+                        }
+                    } else {
+                        <tr><td colspan="4" class="text-center text-muted py-4">Chưa có giao dịch nào phát sinh.</td></tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <h3 class="text-secondary mb-3 mt-4"><i class="bi bi-archive-fill"></i> Hồ Sơ Báo Cáo</h3>
+    <table class="table table-bordered table-striped bg-white shadow-sm border-secondary">
+        <thead class="table-secondary border-secondary">
             <tr>
-                <th>Phim</th>
-                <th>Giờ Bắt Đầu</th>
-                <th>Tổng Số Vé</th>
-                <th>Tổng Tền</th>
+                <th>Tên Báo Cáo (Khóa)</th>
+                <th>Khoảng Thời Gian</th>
+                <th class="text-center">Tổng Số Vé</th>
+                <th class="text-end">Tổng Doanh Thu</th>
+                <th>Ngày Người Quản Lý Chốt</th>
             </tr>
         </thead>
         <tbody>
-            @if (Model != null && Model.Any()) {
-                @foreach(var item in Model) {
-                    <tr>
-                        <td class="fw-bold">@item.TenPhim</td>
-                        <td>@item.GioBatDau.ToString("dd/MM/yyyy HH:mm")</td>
-                        <td class="text-center">@item.TongSoVe</td>
-                        <td class="text-danger fw-bold text-end">@item.TongDoanhThu.ToString("#,##0") đ</td>
-                    </tr>
+            @if (ViewBag.SavedReports != null) {
+                var list = ViewBag.SavedReports as IEnumerable<MiniCinema.Models.BaoCaoThongKe>;
+                if (list != null && list.Any()) {
+                    foreach(var b in list) {
+                        <tr>
+                            <td class="fw-bold align-middle">
+                                @b.TenBaoCao<br/>
+                                <small class="text-muted">Mã: @b.MaBaoCao</small>
+                            </td>
+                            <td class="align-middle">@b.NgayBatDau.ToString("dd/MM/yyyy") -> @b.NgayKetThuc.ToString("dd/MM/yyyy")</td>
+                            <td class="text-center align-middle text-primary fw-bold">@b.TongSoVe</td>
+                            <td class="text-end text-danger fw-bold fs-5 align-middle">@b.TongDoanhThu.ToString("#,##0") đ</td>
+                            <td class="align-middle">@b.NgayTao.ToString("dd/MM/yyyy HH:mm")</td>
+                        </tr>
+                    }
+                } else {
+                    <tr><td colspan="5" class="text-center py-4 bg-light">Chưa có báo cáo nào được tạo vào CSDL.</td></tr>
                 }
-            } else {
-                <tr><td colspan="4" class="text-center text-muted">Chưa có giao dịch nào hoàn thành.</td></tr>
             }
         </tbody>
     </table>
 </div>
+
+@section Scripts {
+    <!-- Thư viện SheetJS cho Excel -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <!-- Thư viện html2pdf cho PDF -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+
+    <script>
+        function exportExcel() {
+            var table = document.getElementById("reportTable");
+            // Tạo workbook từ bảng html
+            var wb = XLSX.utils.table_to_book(table, {sheet: "Doanh Thu"});
+            // Cài ngày xuất vào tên file
+            let date = new Date().toISOString().slice(0, 10);
+            XLSX.writeFile(wb, "BaoCaoDoanhThu_" + date + ".xlsx");
+        }
+
+        function exportPDF() {
+            var element = document.getElementById("printArea");
+            document.getElementById("pdfHeader").classList.remove("d-none"); // Hiện title trên PDF
+
+            var opt = {
+              margin:       0.5,
+              filename:     'BaoCaoDoanhThu_' + new Date().toISOString().slice(0, 10) + '.pdf',
+              image:        { type: 'jpeg', quality: 0.98 },
+              html2canvas:  { scale: 2 },
+              jsPDF:        { unit: 'in', format: 'letter', orientation: 'portrait' }
+            };
+
+            html2pdf().set(opt).from(element).save().then(() => {
+                document.getElementById("pdfHeader").classList.add("d-none"); // Ẩn lại title trên web
+            });
+        }
+    </script>
+}

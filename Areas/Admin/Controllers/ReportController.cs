@@ -23,7 +23,7 @@ namespace MiniCinema.Areas.Admin.Controllers
             var reportData = await _context.Ves
                 .Include(v => v.SuatChieu)
                     .ThenInclude(s => s.Phim)
-                .Where(v => v.TrangThaiVe == Models.TrangThaiVe.DaBan)
+                .Where(v => v.TrangThaiVe == Models.TrangThaiVe.DaBan || v.TrangThaiVe == Models.TrangThaiVe.DaCheckIn)
                 .GroupBy(v => new { v.SuatChieuId, v.SuatChieu.Phim.TenPhim, v.SuatChieu.GioBatDau })
                 .Select(g => new ReportViewModel
                 {
@@ -36,7 +36,45 @@ namespace MiniCinema.Areas.Admin.Controllers
                 .OrderByDescending(r => r.GioBatDau)
                 .ToListAsync();
 
+            ViewBag.SavedReports = await _context.BaoCaoThongKes.OrderByDescending(b => b.NgayTao).ToListAsync();
+
             return View(reportData);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> TongHopDuLieu(System.DateTime startDate, System.DateTime endDate)
+        {
+            if (startDate > endDate)
+            {
+                TempData["Error"] = "Ngày bắt đầu không được lớn hơn ngày kết thúc.";
+                return RedirectToAction(nameof(Index));
+            }
+
+            var query = _context.Ves
+                .Include(v => v.SuatChieu)
+                .Where(v => (v.TrangThaiVe == Models.TrangThaiVe.DaBan || v.TrangThaiVe == Models.TrangThaiVe.DaCheckIn)
+                            && v.SuatChieu != null
+                            && v.SuatChieu.GioBatDau >= startDate 
+                            && v.SuatChieu.GioBatDau <= endDate);
+
+            int tongSoVe = await query.CountAsync();
+            decimal tongDoanhThu = tongSoVe > 0 ? await query.SumAsync(v => v.GiaVe) : 0;
+
+            var baoCao = new Models.BaoCaoThongKe
+            {
+                TenBaoCao = $"Báo cáo doanh thu từ {startDate:dd/MM/yyyy} đến {endDate:dd/MM/yyyy}",
+                NgayBatDau = startDate,
+                NgayKetThuc = endDate,
+                TongSoVe = tongSoVe,
+                TongDoanhThu = tongDoanhThu
+            };
+
+            _context.BaoCaoThongKes.Add(baoCao);
+            await _context.SaveChangesAsync();
+
+            TempData["Success"] = "Đã tổng hợp và lưu chốt sổ báo cáo thành công!";
+            return RedirectToAction(nameof(Index));
         }
     }
 

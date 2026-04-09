@@ -66,6 +66,22 @@ namespace MiniCinema.Areas.Admin.Controllers
             return RedirectToAction("Index", new { searchCode = maVe });
         }
 
+        [HttpGet]
+        public async Task<IActionResult> CheckAgeInfo(string maVe)
+        {
+            if (string.IsNullOrEmpty(maVe)) return Json(new { hasAgeRating = false });
+
+            var ve = await _context.Ves
+                .Include(v => v.SuatChieu)
+                    .ThenInclude(s => s.Phim)
+                .FirstOrDefaultAsync(v => v.MaVe == maVe);
+
+            var rating = ve?.SuatChieu?.Phim?.NhanDoTuoi ?? "";
+            bool requiresCheck = rating.Contains("18+") || rating.Contains("16+") || rating.Contains("T18") || rating.Contains("T16");
+
+            return Json(new { hasAgeRating = requiresCheck, rating = rating });
+        }
+
         public async Task<IActionResult> Print(string maVe)
         {
             if (string.IsNullOrEmpty(maVe)) return NotFound();
