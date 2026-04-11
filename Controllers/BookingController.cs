@@ -97,6 +97,38 @@ namespace MiniCinema.Controllers
             return RedirectToAction("SeatMap", new { showtimeId = req.SuatChieuId });
         }
 
+        [Authorize(Roles = "Admin, Staff")]
+        [HttpPost]
+        public async Task<IActionResult> StaffPayment(BookingRequestDto req, string CustomerPhone)
+        {
+            var staffUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (string.IsNullOrEmpty(staffUserId)) return RedirectToAction("Login", "Account");
+            
+            // Mặc định gán vé cho Nhân viên nếu khách vãng lai
+            req.UserId = staffUserId;
+
+            if (!string.IsNullOrEmpty(CustomerPhone))
+            {
+                var customer = await _context.Users.FirstOrDefaultAsync(u => u.PhoneNumber == CustomerPhone);
+                if (customer != null)
+                {
+                    // Nếu tìm thấy SĐT thì chuyển quyền sở hữu vé cho Khách Hàng đó
+                    req.UserId = customer.Id;
+                }
+            }
+
+            var result = await _bookingService.ProcessPaymentAsync(req);
+            
+            if (result.IsSuccess && result.GiaoDich != null)
+            {
+                // Phương thức tự động nhận "Offline" từ Service như User yêu cầu.
+                return RedirectToAction("Ticket", new { transactionId = result.GiaoDich.MaGiaoDich });
+            }
+
+            TempData["Error"] = result.Error;
+            return RedirectToAction("SeatMap", new { showtimeId = req.SuatChieuId });
+        }
+
         public async Task<IActionResult> Ticket(string transactionId)
         {
             var ves = await _context.Ves
