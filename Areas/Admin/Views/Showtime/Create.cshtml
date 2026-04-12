@@ -14,11 +14,15 @@
 
                         <div class="mb-3">
                             <label class="form-label fw-bold text-muted small">Phim</label>
-                            <select asp-for="PhimId" asp-items="ViewBag.PhimId" class="form-select border-0 shadow-sm rounded-3" id="PhimId"></select>
+                            <select asp-for="PhimId" asp-items="ViewBag.PhimId" class="form-select border-0 shadow-sm rounded-3" id="PhimId">
+                                <option value="">--Chọn Phim--</option>
+                            </select>
                         </div>
                         <div class="mb-3">
                             <label class="form-label fw-bold text-muted small">Phòng chiếu</label>
-                            <select asp-for="PhongChieuId" asp-items="ViewBag.PhongChieuId" class="form-select border-0 shadow-sm rounded-3" id="PhongChieuId"></select>
+                            <select asp-for="PhongChieuId" asp-items="ViewBag.PhongChieuId" class="form-select border-0 shadow-sm rounded-3" id="PhongChieuId">
+                                <option value="">--Chọn Phòng Chiếu--</option>
+                            </select>
                         </div>
                         <div class="mb-3">
                             <label class="form-label fw-bold text-muted small">Giờ Bắt Đầu</label>
@@ -51,8 +55,8 @@
                           now.getDate().toString().padStart(2, '0');
             let randomStr = Math.floor(Math.random() * 900 + 100); // 100-999
             
-            // Format: LC-YYMMDD-XXX
-            document.getElementById('MaSuatChieu').value = "LC-" + dateStr + "-" + randomStr;
+            // Format: SC-YYMMDD-XXX
+            document.getElementById('MaSuatChieu').value = "SC-" + dateStr + "-" + randomStr;
         }
 
         // Tự động sinh mã khi vừa load trang

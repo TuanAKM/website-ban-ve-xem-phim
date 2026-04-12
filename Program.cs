@@ -31,7 +31,21 @@ builder.Services.AddSingleton<ISeatLockService, SeatLockService>();
 builder.Services.AddHostedService<SeatUnlockProcessingService>();
 builder.Services.AddSignalR();
 
-builder.Services.AddControllersWithViews();
+builder.Services.AddControllersWithViews(options =>
+{
+    // Việt hóa các thông báo lỗi ép kiểu (Model Binding) khi nhập sai định dạng hệ thống
+    options.ModelBindingMessageProvider.SetAttemptedValueIsInvalidAccessor((value, field) =>
+        $"Giá trị '{value}' không hợp lệ (Vượt quá giới hạn thời gian/số lượng cho phép).");
+        
+    options.ModelBindingMessageProvider.SetValueIsInvalidAccessor((value) =>
+        $"Giá trị '{value}' không điền đúng định dạng.");
+        
+    options.ModelBindingMessageProvider.SetValueMustNotBeNullAccessor((value) =>
+        "Trường dữ liệu này bắt buộc phải nhập.");
+        
+    options.ModelBindingMessageProvider.SetUnknownValueIsInvalidAccessor((field) =>
+        $"Dữ liệu nhập vào ô này không hợp lệ.");
+});
 
 var app = builder.Build();
 
