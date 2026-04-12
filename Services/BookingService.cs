@@ -58,6 +58,19 @@ namespace MiniCinema.Services
                 var ves = new List<Ve>();
                 var maGd = Guid.NewGuid().ToString();
 
+                var suatChieu = await _context.SuatChieus.FindAsync(bookingDto.SuatChieuId);
+                if (suatChieu == null) return (false, "Suất chiếu không tồn tại.", null);
+
+                decimal maxMultiplier = 0.0m;
+                if (suatChieu.GioBatDau.Hour >= 18 && suatChieu.GioBatDau.Hour <= 23) maxMultiplier = Math.Max(maxMultiplier, 0.15m);
+                var holidays = new[] { (1, 1), (30, 4), (1, 5), (2, 9), (24, 12), (31, 12) };
+                if (holidays.Contains((suatChieu.GioBatDau.Day, suatChieu.GioBatDau.Month))) maxMultiplier = Math.Max(maxMultiplier, 0.30m);
+                else if (suatChieu.GioBatDau.DayOfWeek == DayOfWeek.Friday ||
+                         suatChieu.GioBatDau.DayOfWeek == DayOfWeek.Saturday ||
+                         suatChieu.GioBatDau.DayOfWeek == DayOfWeek.Sunday) maxMultiplier = Math.Max(maxMultiplier, 0.20m);
+                
+                decimal multiplier = 1.0m + maxMultiplier;
+
                 foreach (var seatId in bookingDto.SelectedSeatIds)
                 {
                     var ghe = await _context.Ghes.FindAsync(seatId);
@@ -69,9 +82,11 @@ namespace MiniCinema.Services
 
                     _seatLockService.UnlockSeat(bookingDto.SuatChieuId, seatId);
 
-                    decimal giaVe = 50000; // Base
-                    if (ghe.LoaiGhe == LoaiGhe.Vip) giaVe += 20000;
-                    if (ghe.LoaiGhe == LoaiGhe.Doi) giaVe += 50000;
+                    decimal basePrice = 50000; // Base
+                    if (ghe.LoaiGhe == LoaiGhe.Vip) basePrice += 20000;
+                    if (ghe.LoaiGhe == LoaiGhe.Doi) basePrice += 50000;
+                    
+                    decimal giaVe = basePrice * multiplier;
 
                     tongTien += giaVe;
 

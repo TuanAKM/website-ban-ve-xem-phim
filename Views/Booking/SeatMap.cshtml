@@ -8,6 +8,26 @@
     <h2 class="mb-4 text-primary">Chọn ghế ngồi - @Model.Phim.TenPhim</h2>
     <p class="text-muted"><i class="bi bi-clock"></i> Giờ chiếu: <strong>@Model.GioBatDau.ToString("dd/MM/yyyy HH:mm")</strong></p>
 
+    @{
+        decimal maxMultiLabel = 0.0m;
+        string reason = "";
+        var gBD = Model.GioBatDau;
+        if (gBD.Hour >= 18 && gBD.Hour <= 23) { maxMultiLabel = 0.15m; reason = "Suất chiếu Tối"; }
+        
+        var hlds = new[] { (1, 1), (30, 4), (1, 5), (2, 9), (24, 12), (31, 12) };
+        if (hlds.Contains((gBD.Day, gBD.Month))) {
+            if (0.30m > maxMultiLabel) { maxMultiLabel = 0.30m; reason = "Ngày Lễ"; }
+        } else if (gBD.DayOfWeek == DayOfWeek.Friday || gBD.DayOfWeek == DayOfWeek.Saturday || gBD.DayOfWeek == DayOfWeek.Sunday) {
+            if (0.20m > maxMultiLabel) { maxMultiLabel = 0.20m; reason = "Cuối Tuần"; }
+        }
+    }
+    @if (maxMultiLabel > 0)
+    {
+        <div class="alert alert-info py-2 shadow-sm d-inline-block rounded-pill ps-3 pe-4 fw-bold">
+            <i class="bi bi-info-circle-fill text-primary"></i> Đang áp dụng Phụ thu +@((maxMultiLabel * 100).ToString("0"))% cho Khung giờ/Ngày: <span class="text-danger">@reason</span>
+        </div>
+    }
+
     @if (TempData["Error"] != null)
     {
         <div class="alert alert-danger">@TempData["Error"]</div>
@@ -43,9 +63,24 @@
                             colorClass = "bg-warning";
                         }
 
-                        int priceDetails = 50000;
-                        if (ghe.LoaiGhe == MiniCinema.Models.LoaiGhe.Vip) priceDetails += 20000;
-                        if (ghe.LoaiGhe == MiniCinema.Models.LoaiGhe.Doi) priceDetails += 50000;
+                        decimal baseSeatPrice = 50000;
+                        if (ghe.LoaiGhe == MiniCinema.Models.LoaiGhe.Vip) baseSeatPrice += 20000;
+                        if (ghe.LoaiGhe == MiniCinema.Models.LoaiGhe.Doi) baseSeatPrice += 50000;
+
+                        decimal maxMulti = 0.0m;
+                        var gioBatDau = Model.GioBatDau;
+                        if (gioBatDau.Hour >= 18 && gioBatDau.Hour <= 23) maxMulti = Math.Max(maxMulti, 0.15m);
+                        
+                        var holidays = new[] { (1, 1), (30, 4), (1, 5), (2, 9), (24, 12), (31, 12) };
+                        if (holidays.Contains((gioBatDau.Day, gioBatDau.Month))) {
+                            maxMulti = Math.Max(maxMulti, 0.30m);
+                        } else if (gioBatDau.DayOfWeek == DayOfWeek.Friday ||
+                                   gioBatDau.DayOfWeek == DayOfWeek.Saturday ||
+                                   gioBatDau.DayOfWeek == DayOfWeek.Sunday) {
+                            maxMulti = Math.Max(maxMulti, 0.20m);
+                        }
+
+                        int priceDetails = (int)(baseSeatPrice * (1.0m + maxMulti));
 
                         <div id="seat-@ghe.MaGhe"
                              class="seat p-1 text-center text-white cursor-pointer @colorClass rounded shadow-sm"
