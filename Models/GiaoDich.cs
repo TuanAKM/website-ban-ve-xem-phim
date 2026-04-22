@@ -15,7 +15,7 @@ namespace MiniCinema.Models
         public bool TrangThai { get; set; }
 
         
-        [Required]
+        [Required(ErrorMessage = "Vui lòng chọn người dùng")]
         public string UserId { get; set; } = null!;
         [ForeignKey("UserId")]
         public ApplicationUser? User { get; set; }

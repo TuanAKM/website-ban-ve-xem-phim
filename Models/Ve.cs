@@ -11,17 +11,17 @@ namespace MiniCinema.Models
         public TrangThaiVe TrangThaiVe { get; set; }
         public decimal ThueVAT { get; set; } // e.g. 0.08 for 8%
         
-        [Required]
+        [Required(ErrorMessage = "Vui lòng chọn Ghế")]
         public string GheId { get; set; } = null!;
         [ForeignKey("GheId")]
         public Ghe? Ghe { get; set; }
 
-        [Required]
+        [Required(ErrorMessage = "Vui lòng chọn Suất chiếu")]
         public string SuatChieuId { get; set; } = null!;
         [ForeignKey("SuatChieuId")]
         public SuatChieu? SuatChieu { get; set; }
 
-        [Required]
+        [Required(ErrorMessage = "Vui lòng chọn Giao dịch")]
         public string MaGiaoDich { get; set; } = null!;
         [ForeignKey("MaGiaoDich")]
         public GiaoDich? GiaoDich { get; set; }

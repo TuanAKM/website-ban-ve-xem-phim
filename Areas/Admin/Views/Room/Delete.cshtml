@@ -14,6 +14,13 @@
                         <strong><i class="bi bi-cone-striped"></i> STOP:</strong> Phòng chiếu này đang dính dáng tới các Suất Chiếu có thật. Rủi ro hỏng Database vé bán là rất lớn. Hãy Hủy Suất Chiếu trước khi Xóa Phòng.
                     </div>
                 }
+                
+                @if(TempData["ErrorMessage"] != null)
+                {
+                    <div class="alert alert-dark border-danger border-2 mt-3 text-start small text-danger fw-bold shadow-sm">
+                        <i class="bi bi-shield-fill-x fs-5 align-middle me-2"></i> LỖI SQL: @TempData["ErrorMessage"]
+                    </div>
+                }
 
                 <form asp-action="Delete" method="post" class="mt-4">
                     <input type="hidden" asp-for="MaPhong" />

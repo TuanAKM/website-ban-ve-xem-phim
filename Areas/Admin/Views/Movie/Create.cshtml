@@ -36,7 +36,16 @@
                             </div>
                             <div class="col-md-6 mb-3">
                                 <label asp-for="TheLoai" class="form-label fw-bold text-muted small">Thể Loại</label>
-                                <input asp-for="TheLoai" class="form-control border-0 shadow-sm" placeholder="Hành động, Hài..." />
+                                <select asp-for="TheLoai" class="form-select border-0 shadow-sm">
+                                    <option value="">-- Chọn Thể Loại --</option>
+                                    <option value="Hành động">Hành động</option>
+                                    <option value="Tình cảm">Tình cảm</option>
+                                    <option value="Kinh dị">Kinh dị</option>
+                                    <option value="Hài hước">Hài hước</option>
+                                    <option value="Hoạt hình">Hoạt hình</option>
+                                    <option value="Khoa học viễn tưởng">Khoa học viễn tưởng</option>
+                                </select>
+                                <span asp-validation-for="TheLoai" class="text-danger small"></span>
                             </div>
                         </div>
 
@@ -47,7 +56,13 @@
                             </div>
                             <div class="col-md-6 mb-3">
                                 <label asp-for="DinhDang" class="form-label fw-bold text-muted small">Định Dạng</label>
-                                <input asp-for="DinhDang" class="form-control border-0 shadow-sm" placeholder="VD: 2D, 3D" value="2D" />
+                                <select asp-for="DinhDang" class="form-select border-0 shadow-sm">
+                                    <option value="">-- Chọn Định Dạng --</option>
+                                    <option value="2D">2D Tiêu Chuẩn</option>
+                                    <option value="3D">3D</option>
+                                    <option value="IMAX">IMAX</option>
+                                </select>
+                                <span asp-validation-for="DinhDang" class="text-danger small"></span>
                             </div>
                         </div>
 

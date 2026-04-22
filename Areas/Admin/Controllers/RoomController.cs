@@ -151,10 +151,18 @@ namespace MiniCinema.Areas.Admin.Controllers
             var p = await _context.PhongChieus.Include(r => r.Ghes).FirstOrDefaultAsync(r => r.MaPhong == id);
             if (p != null)
             {
-                // Xoá toàn bộ ghế của phòng (Cascade bằng tay nếu DB không set cascade xoá mềm)
-                _context.Ghes.RemoveRange(p.Ghes);
-                _context.PhongChieus.Remove(p);
-                await _context.SaveChangesAsync();
+                try
+                {
+                    // Xoá toàn bộ ghế của phòng (Cascade bằng tay nếu DB không set cascade xoá mềm)
+                    _context.Ghes.RemoveRange(p.Ghes);
+                    _context.PhongChieus.Remove(p);
+                    await _context.SaveChangesAsync();
+                }
+                catch (DbUpdateException)
+                {
+                    TempData["ErrorMessage"] = "Truy vấn CSDL thất bại: Phòng này đang chứa các ghế đã được bán VÉ thật. Không thể xóa mồ côi dữ liệu Vé của khách hàng! Bạn phải xóa Vé trước.";
+                    return RedirectToAction(nameof(Delete), new { id = id });
+                }
             }
             return RedirectToAction(nameof(Index));
         }

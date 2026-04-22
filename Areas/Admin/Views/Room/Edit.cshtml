@@ -21,7 +21,13 @@
                         </div>
                         <div class="mb-3">
                             <label asp-for="LoaiPhong" class="form-label text-muted fw-bold">Phân Loại Phòng</label>
-                            <input asp-for="LoaiPhong" class="form-control" />
+                            <select asp-for="LoaiPhong" class="form-select">
+                                <option value="">-- Chọn Loại Phòng --</option>
+                                <option value="2D">Phòng chiếu 2D Tiêu Chuẩn</option>
+                                <option value="3D">Phòng chiếu 3D</option>
+                                <option value="IMAX">Phòng chiếu IMAX</option>
+                            </select>
+                            <span asp-validation-for="LoaiPhong" class="text-danger small"></span>
                         </div>
                         
                         <div class="alert alert-info small mt-2">

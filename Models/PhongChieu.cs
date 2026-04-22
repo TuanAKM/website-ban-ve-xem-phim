@@ -6,10 +6,12 @@ namespace MiniCinema.Models
     public class PhongChieu
     {
         [Key]
+        [Required(ErrorMessage = "Vui lòng nhập mã phòng")]
         public string MaPhong { get; set; } = null!;
-        [Required]
+        [Required(ErrorMessage = "Vui lòng nhập tên phòng")]
         public string TenPhong { get; set; } = null!;
-        public string? LoaiPhong { get; set; }
+        [Required(ErrorMessage = "Vui lòng chọn Loại Phòng")]
+        public string LoaiPhong { get; set; } = null!;
         public int TongSoGhe { get; set; }
         
         public ICollection<Ghe>? Ghes { get; set; }

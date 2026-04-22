@@ -12,7 +12,7 @@ namespace MiniCinema.Models
         public TrangThaiGhe TrangThai { get; set; }
         public DateTime? ThoiGianKhoa { get; set; }
         
-        [Required]
+        [Required(ErrorMessage = "Vui lòng chọn Phòng chiếu")]
         public string PhongChieuId { get; set; } = null!;
         [ForeignKey("PhongChieuId")]
         public PhongChieu? PhongChieu { get; set; }

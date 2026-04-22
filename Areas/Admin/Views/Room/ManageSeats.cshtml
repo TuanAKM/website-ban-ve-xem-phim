@@ -139,7 +139,9 @@
         let seatModal;
         
         document.addEventListener("DOMContentLoaded", function() {
-            seatModal = new bootstrap.Modal(document.getElementById('seatModal'));
+            const modalEl = document.getElementById('seatModal');
+            document.body.appendChild(modalEl); // Đưa Modal ra ngoài cùng <body> để không bị đè bởi z-index của Layout
+            seatModal = new bootstrap.Modal(modalEl);
         });
 
         function openSeatModal(element) {

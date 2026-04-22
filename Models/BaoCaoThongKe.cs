@@ -8,13 +8,13 @@ namespace MiniCinema.Models
         [Key]
         public string MaBaoCao { get; set; } = Guid.NewGuid().ToString();
 
-        [Required]
+        [Required(ErrorMessage = "Vui lòng nhập tên báo cáo")]
         public string TenBaoCao { get; set; } = null!;
 
-        [Required]
+        [Required(ErrorMessage = "Vui lòng nhập ngày bắt đầu")]
         public DateTime NgayBatDau { get; set; }
 
-        [Required]
+        [Required(ErrorMessage = "Vui lòng nhập ngày kết thúc")]
         public DateTime NgayKetThuc { get; set; }
 
         public decimal TongDoanhThu { get; set; }
