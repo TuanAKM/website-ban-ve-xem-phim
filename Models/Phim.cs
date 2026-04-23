@@ -19,6 +19,7 @@ namespace MiniCinema.Models
         [Required(ErrorMessage = "Vui lòng chọn Thể loại phim")]
         public string TheLoai { get; set; } = null!;
         [Required(ErrorMessage = "Vui lòng chọn độ tuổi")]
+        [RegularExpression(@"^[a-zA-Z0-9\+]+$", ErrorMessage = "Nhãn độ tuổi không được chứa khoảng trắng hay ký tự đặc biệt")]
         public string NhanDoTuoi { get; set; } = null!;
         [Required(ErrorMessage = "Vui lòng chọn Định dạng phim")]
         public string DinhDang { get; set; } = null!;

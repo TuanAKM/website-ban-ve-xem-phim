@@ -49,7 +49,15 @@
                         <div class="row">
                             <div class="col-md-6 mb-3">
                                 <label asp-for="NhanDoTuoi" class="form-label fw-bold text-muted small">Nhãn Độ Tuổi</label>
-                                <input asp-for="NhanDoTuoi" class="form-control border-0 shadow-sm" placeholder="VD: 18+, T13" />
+                                <select asp-for="NhanDoTuoi" class="form-select border-0 shadow-sm">
+                                    <option value="">-- Chọn Nhãn Độ Tuổi --</option>
+                                    <option value="P">P (Phổ biến)</option>
+                                    <option value="K">K (Dưới 13T xem cùng cha mẹ)</option>
+                                    <option value="T13">T13 (Từ 13 tuổi trở lên)</option>
+                                    <option value="T16">T16 (Từ 16 tuổi trở lên)</option>
+                                    <option value="T18">T18 (Từ 18 tuổi trở lên)</option>
+                                </select>
+                                <span asp-validation-for="NhanDoTuoi" class="text-danger small"></span>
                             </div>
                             <div class="col-md-6 mb-3">
                                 <label asp-for="DinhDang" class="form-label fw-bold text-muted small">Định Dạng</label>
