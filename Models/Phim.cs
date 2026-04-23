@@ -7,8 +7,11 @@ namespace MiniCinema.Models
     {
         [Key]
         [Required(ErrorMessage = "Vui lòng nhập mã phim")]
+        [RegularExpression(@"^[a-zA-Z0-9\-]+$", ErrorMessage = "Mã phim chỉ được chứa chữ cái, số và dấu gạch ngang (không chứa dấu cách hay ký tự đặc biệt)")]
         public string MaPhim { get; set; } = null!;
+        
         [Required(ErrorMessage = "Vui lòng nhập tên phim")]
+        [RegularExpression(@"^[\p{L}\p{N}\s\-]+$", ErrorMessage = "Tên phim không được chứa ký tự đặc biệt (!@#$...)")]
         public string TenPhim { get; set; } = null!;
         [Required(ErrorMessage = "Vui lòng nhập thời lượng phim")]
         [Range(1, 300, ErrorMessage = "Thời lượng phải từ 1 đến 300 phút")]
